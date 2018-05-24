@@ -1,0 +1,1 @@
+export const ADD_COLORED_RECT = 'ADD_COLORED_RECT';

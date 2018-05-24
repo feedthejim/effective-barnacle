@@ -1,6 +1,5 @@
 import Konva from 'konva';
 import { ADD_COLORED_RECT } from '../actions/canvas';
-import * as R from 'ramda';
 
 export default (state = {
   entities: [
@@ -15,15 +14,17 @@ export default (state = {
 }, action) => {
   switch (action.type) {
     case ADD_COLORED_RECT:
-      return R.evolve(
-        {
-          entities: R.prepend({
+      return {
+        ...state,
+        entities: [
+          ...state.entities,
+          {
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
             color: Konva.Util.getRandomColor()
-          })
-        },
-        state);
+          }
+        ]
+      };
   }
   return state;
 };

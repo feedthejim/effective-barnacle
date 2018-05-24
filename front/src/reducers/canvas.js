@@ -5,6 +5,7 @@ export default (state = {
   entities: [
   ],
   player: {
+    name: 'undefined',
     id: 0,
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,

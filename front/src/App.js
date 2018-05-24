@@ -4,6 +4,27 @@ import { Stage, Layer, Text, Rect } from 'react-konva';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
 import { ADD_COLORED_RECT } from './actions/canvas';
+import { WEBSOCKET_CONNECT } from './actions/websocket';
+
+const mapStateToProps = state => {
+  return {
+    rectangles: state.canvas.entities,
+    player: state.canvas.player,
+  };
+};
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+    insertNewRectangle: () => dispatch({ type: ADD_COLORED_RECT }),
+    connect: () => dispatch({
+      type: WEBSOCKET_CONNECT,
+      url: 'ws://localhost:4242',
+      username: 'jimmy',
+    })
+  };
+};
+
 
 const Rectangle = ({ color, x, y }) => (
   <Rect
@@ -16,34 +37,16 @@ const Rectangle = ({ color, x, y }) => (
   />
 );
 
-const App = ({ player, rectangles, insertNewRectangle }) => {
-  const stageRef = React.createRef();
+const App = ({ player, rectangles, connect }) => {
   return (
-    <Stage ref={stageRef} width={window.innerWidth} height={window.innerHeight}
-      onMouseMove={() =>
-        /* eslint-disable-next-line */
-        console.log(stageRef.getStage().getPointerPosition())}>
+    <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Text onclick={insertNewRectangle} text="Try click on rect" />
+        <Text onclick={connect} text="Try click on rect" />
         {R.map(Rectangle, rectangles)}
         {Rectangle(player)}
       </Layer>
     </Stage >
   );
-};
-
-const mapStateToProps = state => {
-  return {
-    rectangles: state.canvas.entities,
-    player: state.canvas.player,
-  };
-};
-
-
-const mapDispatchToProps = dispatch => {
-  return {
-    insertNewRectangle: () => dispatch({ type: ADD_COLORED_RECT })
-  };
 };
 
 export default connect(

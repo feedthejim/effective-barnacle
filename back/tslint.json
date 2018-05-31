@@ -1,3 +1,6 @@
 {
-    "extends": "./node_modules/tslint-config-airbnb/tslint"
+  "extends": "./node_modules/tslint-config-airbnb/tslint",
+  "rules": {
+    "semicolon": false,
+  }
 }

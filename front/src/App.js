@@ -1,55 +1,64 @@
-import React from 'react';
-import { Stage, Layer, Text, Rect } from 'react-konva';
+import React from 'react'
+import { Stage, Layer, Rect } from 'react-konva'
 // import Konva from 'konva';
-import * as R from 'ramda';
-import { connect } from 'react-redux';
-import { ADD_COLORED_RECT } from './actions/canvas';
-import { WEBSOCKET_CONNECT } from './actions/websocket';
+// import * as R from 'ramda';
+import { connect } from 'react-redux'
+import { ADD_COLORED_RECT } from './actions/canvas'
+import { WEBSOCKET_CONNECT } from './actions/websocket'
+import Konva from 'konva'
 
 const mapStateToProps = state => {
   return {
-    rectangles: state.canvas.entities,
+    isGameRunning: state.canvas.isGameRunning,
+    players: state.canvas.players,
     player: state.canvas.player,
-  };
-};
-
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
     insertNewRectangle: () => dispatch({ type: ADD_COLORED_RECT }),
-    connect: () => dispatch({
-      type: WEBSOCKET_CONNECT,
-      url: 'ws://localhost:4242',
-      username: 'jimmy',
-    })
-  };
-};
+    connect: username =>
+      dispatch({
+        type: WEBSOCKET_CONNECT,
+        url: 'ws://localhost:4242',
+        username,
+      }),
+  }
+}
 
-
-const Rectangle = ({ color, x, y }) => (
+const Rectangle = ({ color, body }) => (
   <Rect
-    x={x}
-    y={y}
+    x={body[0].x}
+    y={body[0].y}
     width={50}
     height={50}
-    fill={color}
+    fill={Konva.Util.getRandomColor()}
     shadowBlur={5}
   />
-);
+)
 
-const App = ({ player, rectangles, connect }) => {
+const Canvas = ({ players }) => {
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
-      <Layer>
-        <Text onclick={connect} text="Try click on rect" />
-        {R.map(Rectangle, rectangles)}
-        {Rectangle(player)}
-      </Layer>
-    </Stage >
-  );
-};
+      <Layer>{players.map(Rectangle)}</Layer>
+    </Stage>
+  )
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {}
+  }
+
+  componentDidMount() {
+    this.props.connect('Jimmy')
+  }
+
+  render() {
+    return this.props.isGameRunning && Canvas(this.props)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

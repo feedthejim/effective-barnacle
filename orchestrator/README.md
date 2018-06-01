@@ -8,3 +8,4 @@ This project uses Traefik...
 * `EB_SERVER_DOCKER_IMAGE`
 * `EB_DOMAIN_NAME`
 * `EB_MAX_CLIENTS_PER_SERVER`
+* `EB_MONGO_HOST`

@@ -1,7 +1,8 @@
 import * as express from 'express';
 import * as mongoose from 'mongoose';
 
-mongoose.connect('mongodb://localhost/barnacle');
+const MONGO_HOST = process.env.EB_MONGO_HOST || 'localhost';
+mongoose.connect(`mongodb://${MONGO_HOST}/barnacle`);
 
 import connect from './routes/connect';
 import disconnect from './routes/disconnect';

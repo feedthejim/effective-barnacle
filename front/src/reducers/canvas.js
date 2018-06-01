@@ -79,8 +79,8 @@ export default (state = initialState, action) => {
         isGameRunning: true,
         players: [...action.players],
         player: {
-          ...state.player,
-          body: player ? player.body : [],
+          color: state.player.color,
+          ...(player ? player : state.player),
         },
       };
     }

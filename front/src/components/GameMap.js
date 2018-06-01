@@ -1,8 +1,8 @@
 import React from 'react';
-import { Layer, Rect } from 'react-konva';
+import { Layer } from 'react-konva';
 import { connect } from 'react-redux';
 import { ADD_COLORED_RECT } from '../actions/canvas';
-import Konva from 'konva';
+import Snake from './Snake';
 
 const mapStateToProps = state => {
   return {
@@ -17,20 +17,19 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-const Rectangle = ({ body }) => (
-  <Rect
-    x={body[0].x}
-    y={body[0].y}
-    width={50}
-    height={50}
-    fill={Konva.Util.getRandomColor()}
-    shadowBlur={5}
-  />
-);
-
 class GameMap extends React.Component {
   render() {
-    return <Layer>{this.props.players.map(Rectangle)}</Layer>;
+    return (
+      <Layer>
+        <Snake {...this.props.player} />
+        {this.props.players.map(
+          (player, index) =>
+            player.id !== this.props.player.id ? (
+              <Snake key={index} {...player} />
+            ) : null
+        )}
+      </Layer>
+    );
   }
 }
 

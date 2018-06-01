@@ -13,7 +13,7 @@
   },
   "plugins": ["react"],
   "rules": {
-    "comma-dangle": ["always"],
+    "comma-dangle": ["error", "always-multiline"],
     "react/prop-types": 0,
     "no-var": "error",
     "indent": [

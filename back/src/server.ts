@@ -34,8 +34,8 @@ class Snake {
     this.radius = 1
     this.body = [
       {
-        x: getRndInteger(0, 1000),
-        y: getRndInteger(0, 1000),
+        x: getRndInteger(500, 1000),
+        y: getRndInteger(500, 1000),
       },
     ]
   }
@@ -61,6 +61,9 @@ wss.on('connection', (ws: io.Socket) => {
 
   ws.on('register', (username: string) => {
     currentPlayer = new Snake()
+    // for (let i = 0; i < 1000; i++) {
+    //   snakes.push(new Snake())
+    // }
     snakes.push(currentPlayer)
     ws.emit('register-success', currentPlayer.id)
   })

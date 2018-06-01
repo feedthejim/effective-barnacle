@@ -73,4 +73,4 @@ wss.on('connection', (ws: io.Socket) => {
 })
 
 setInterval(gameLoop, 50)
-wss.listen(4242)
+wss.listen(process.argv[2])

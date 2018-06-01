@@ -11,7 +11,7 @@ const MAX_CLIENTS_PER_SERVER = process.env.EB_MAX_CLIENTS_PER_SERVER || 5;
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
 function generateRandomPort(): number {
-  return Math.round(Math.random() * 5000 + 5000);
+  return Math.round(Math.random() * 10000 + 7000);
 }
 
 function getUnusedPort(servers: IServer[]): number {
@@ -33,8 +33,9 @@ async function spawnServer(servers: IServer[]): Promise<IServer> {
   const url = `eb-arena-${_id}.${DOMAIN_NAME}`;
   const port = await getUnusedPort(servers);
 
-  docker.run(SERVER_IMAGE, [], null, {
+  docker.run(SERVER_IMAGE, ['yarn', 'start', '--', `${port}`], null, {
     Labels: { 'traefik.frontend.rule': `Host:${url}` },
+    ExposedPorts: { [`${port}/tcp`]: {} },
     name: _id,
   });
 

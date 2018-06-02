@@ -68,7 +68,7 @@ wss.on('connection', (ws: io.Socket) => {
     ws.emit('register-success', currentPlayer.id)
   })
 
-  ws.on('play', (orientation: Point) => {
+  ws.on('play-move', (orientation: Point) => {
     currentPlayer.currentOrientation = orientation
   })
 

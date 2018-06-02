@@ -7,7 +7,7 @@ import {
 } from '../actions/websocket';
 import { call, put, take, race } from 'redux-saga/effects';
 import io from 'socket.io-client';
-import { MOUSE_MOVE } from '../actions/mousemove';
+import { PLAYER_MOVE } from '../actions/mousemove';
 
 function socketListener(ws, url, username) {
   return eventChannel(emitter => {
@@ -54,7 +54,7 @@ function* externalListener(socketChannel) {
 
 function* internalListener(ws) {
   while (true) {
-    const mouseCoords = yield take(MOUSE_MOVE);
+    const mouseCoords = yield take(PLAYER_MOVE);
     ws.emit('move-player', mouseCoords);
     //socket.send(JSON.stringify({ type: 'setTask', status: 'open' }));
   }

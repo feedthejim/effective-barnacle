@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { eventChannel } from 'redux-saga';
-import { WEBSOCKET_CONNECT, webSocketActions } from './actions/websocket';
-import { all, takeEvery, call, put, take } from 'redux-saga/effects';
+import { WEBSOCKET_CONNECT, webSocketActions } from '../actions/websocket';
+import { takeEvery, call, put, take } from 'redux-saga/effects';
 import io from 'socket.io-client';
 
 const connectSocket = (url, username) =>
@@ -48,44 +48,8 @@ const webSocketSagaCreator = function*(action) {
   }
 };
 
-const createMouseChannel = () => {
-  return eventChannel(emitter => {
-    // finger|mouse move event
-
-    window.addEventListener('mousemove', mouseEvent => {
-      mouseEvent.preventDefault();
-      emitter({
-        type: 'MOUSE_MOVE',
-        x: mouseEvent.clientX,
-        y: mouseEvent.clientY,
-      });
-    });
-
-    const unsubscribe = () => {
-      window.removeEventListener('mousemove');
-    };
-
-    return unsubscribe;
-  });
-};
-
-const mouseMoveSaga = function*() {
-  const mouseMoveChannel = yield call(createMouseChannel);
-
-  while (true) {
-    const action = yield take(mouseMoveChannel);
-    yield put(action);
-  }
-};
-
 const webSocketSaga = function*() {
   yield takeEvery(WEBSOCKET_CONNECT, webSocketSagaCreator);
 };
 
-const rootSaga = function*() {
-  yield all([webSocketSaga(), mouseMoveSaga()]);
-};
-
-// export const rootSaga = webSocketSaga;
-
-export default rootSaga;
+export default webSocketSaga;

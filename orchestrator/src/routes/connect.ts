@@ -34,8 +34,13 @@ async function spawnServer(servers: IServer[]): Promise<IServer> {
   const port = await getUnusedPort(servers);
 
   docker.run(SERVER_IMAGE, ['yarn', 'start', '--', `${port}`], null, {
-    Labels: { 'traefik.frontend.rule': `Host:${url}` },
+    Labels: {
+      'traefik.enable': 'true',
+      'traefik.frontend.rule': `Host:${url}`,
+      'traefik.docker.network': 'traefik_default',
+    },
     ExposedPorts: { [`${port}/tcp`]: {} },
+    NetworkMode: 'traefik_default',
     name: _id,
   });
 

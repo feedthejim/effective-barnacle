@@ -2,8 +2,11 @@ version: '3'
 
 services:
   reverse-proxy:
+    restart: always
     image: traefik:latest
     command: --api --docker
+    networks:
+      - web
     ports:
       - "80:80"
       - "8080:8080"
@@ -28,3 +31,8 @@ services:
     depends_on:
       - reverse-proxy
       - mongodb
+
+networks:
+  web:
+    external:
+      name: traefik_default

@@ -9,11 +9,11 @@ import {
 const initialState = {
   isGameRunning: false,
   gameMap: {
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 1500,
+    height: 1500,
     scale: 1,
-    paintWidth: window.innerWidth / 1,
-    paintHeight: window.innerHeight / 1,
+    paintWidth: 1500 / 1,
+    paintHeight: 1500 / 1,
     view: {
       x: 0,
       y: 0,
@@ -25,10 +25,8 @@ const initialState = {
   player: {
     username: 'undefined',
     id: -1,
-    radius: -1,
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
-    currentOrientation: [],
     color: Konva.Util.getRandomColor(),
   },
 };
@@ -48,8 +46,9 @@ export default (state = initialState, action) => {
         ...state,
         player: {
           ...state.player,
-          id: action.id,
+          ...action.player,
         },
+        isGameRunning: true,
       };
     case WEBSOCKET_GAME_UPDATE: {
       const player = action.players.find(snake => snake.id === state.player.id);
@@ -68,7 +67,6 @@ export default (state = initialState, action) => {
             ...newConf,
           },
         },
-        isGameRunning: true,
         players: [...action.players],
         player: {
           color: state.player.color,

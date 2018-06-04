@@ -33,4 +33,7 @@ class GameMap extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameMap);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GameMap);

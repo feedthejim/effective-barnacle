@@ -44,7 +44,7 @@ export class Game {
         //   snakes.push(new Snake())
         // }
         this.snakes.push(currentPlayer);
-        ws.emit('register-success', currentPlayer.id);
+        ws.emit('register-success', currentPlayer);
       });
 
       ws.on('move', (orientation: any) => {

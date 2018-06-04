@@ -11,10 +11,10 @@ export const connectToServer = (url, username) => {
   };
 };
 
-export const registerSuccess = id => {
+export const registerSuccess = player => {
   return {
     type: WEBSOCKET_REGISTER_SUCCESS,
-    id,
+    player,
   };
 };
 

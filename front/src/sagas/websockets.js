@@ -20,7 +20,6 @@ function socketListener(ws, url, username) {
     // });
 
     ws.on('register-success', data => {
-      console.log('you registered with id:', data);
       actions.registerSuccess(data);
     });
 

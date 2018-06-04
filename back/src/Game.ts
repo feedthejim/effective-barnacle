@@ -1,6 +1,8 @@
 import config from './config';
 import Snake from './entities/Snake';
 import { Server, Socket } from 'socket.io';
+import Food from './entities/Food';
+import GameEntity from './entities/GameEntity';
 
 const {
   MAP_HEIGHT,
@@ -9,11 +11,31 @@ const {
   MAP_WIDTH,
   SOCKET_PORT,
   GAMELOOP_RATE,
+  INITIAL_FOOD_COUNT,
+  INITIAL_FOOD_VALUE,
 } = config;
+
+const collision = (
+  dom: GameEntity,
+  dom2: GameEntity,
+  isRect?: boolean,
+): boolean => {
+  const disX = dom.x - dom2.x;
+  const disY = dom.y - dom2.y;
+  const dw = dom.width + dom2.width;
+
+  if (Math.abs(disX) > dw || Math.abs(disY) > dom.height + dom2.height) {
+    return false;
+  }
+
+  return isRect ? true : Math.hypot(disX, disY) < dw / 2;
+};
+
 // Map class
 export class Game {
   public snakes: Snake[];
   public count: number;
+  public foods: Food[];
 
   constructor(
     private wss: Server,
@@ -22,6 +44,17 @@ export class Game {
   ) {
     this.snakes = [];
     this.count = 0;
+    this.foods = [];
+    for (let i = 0; i < INITIAL_FOOD_COUNT; i += 1) {
+      this.foods.push(
+        new Food({
+          x: ~~(Math.random() * (MAP_WIDTH - 100) + 100 / 2),
+          y: ~~(Math.random() * (MAP_HEIGHT - 100) + 100 / 2),
+          size: 30,
+          value: INITIAL_FOOD_VALUE,
+        }),
+      );
+    }
   }
 
   public init() {
@@ -56,9 +89,22 @@ export class Game {
   private run() {
     this.snakes.forEach((snake: Snake) => {
       snake.update();
+      this.foods.forEach((food: Food) => {
+        food.update();
+        if (!collision(snake, food)) {
+          return;
+        }
+        const added = snake.eat(food);
+        this.foods.splice(this.foods.indexOf(food), 1);
+
+        const newScale = snake.scale + added / (snake.width * 4);
+        if (newScale < 1.4) {
+          snake.scale = newScale;
+        }
+      });
       this.limit(snake);
     });
-    this.wss.emit('game-update', this.snakes);
+    this.wss.emit('game-update', { snakes: this.snakes, foods: this.foods });
   }
 
   // limit element, prevent it moving to outside

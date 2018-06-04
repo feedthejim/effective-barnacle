@@ -1,17 +1,10 @@
 import React from 'react';
 import { Line } from 'react-konva';
 import { connect } from 'react-redux';
-import { ADD_COLORED_RECT } from '../actions/canvas';
 
 const mapStateToProps = state => {
   return {
     gameMap: state.canvas.gameMap,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    insertNewRectangle: () => dispatch({ type: ADD_COLORED_RECT }),
   };
 };
 
@@ -115,33 +108,15 @@ class Snake extends React.Component {
         );
       }
     }
-
-    // const snakeConfig = {
-    //   x: relativeX(this.props.x, this.props.gameMap),
-    //   y: relativeY(this.props.y, this.props.gameMap),
-    //   width: relativeW(this.props.width, this.props.gameMap),
-    //   height: relativeH(this.props.height, this.props.gameMap),
-    // };
-    // // points: [23, 20, 23, 160, 70, 93, 150, 109, 290, 139, 270, 93],
-    // fill: '#00D2FF',
-    // stroke: 'black',
-    // strokeWidth: 5,
-    // closed : true,
-    // tension : 0.3
     return (
       <Line
         points={points}
         stroke={this.props.color || 'black'}
-        // stroke={'black'}
         tension={0.3}
         strokeWidth={relativeW(this.props.width, this.props.gameMap)}
-        // shadowBlur={5}
       />
     );
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Snake);
+export default connect(mapStateToProps)(Snake);

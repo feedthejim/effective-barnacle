@@ -2,7 +2,7 @@ import GameEntity, { GameEntityOptions } from './GameEntity';
 import Food from './Food';
 import config from '../config';
 
-const { SPEED, BASE_ANGLE } = config;
+const { SPEED, BASE_ANGLE, INITIAL_SCALE } = config;
 
 interface SnakeOptions extends GameEntityOptions {
   id: number;
@@ -28,6 +28,7 @@ export default class Snake extends GameEntity {
   public angle: number;
   public stopped: boolean = false;
   public id: number;
+  public scale: number = INITIAL_SCALE;
 
   // save snake's movement
   public movementQueue: Movement[] = [];

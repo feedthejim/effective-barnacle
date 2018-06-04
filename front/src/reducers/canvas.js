@@ -22,6 +22,7 @@ const initialState = {
     },
   },
   players: [],
+  foods: [],
   player: {
     username: 'undefined',
     id: -1,
@@ -41,6 +42,7 @@ export default (state = initialState, action) => {
           username: action.username,
         },
       };
+
     case WEBSOCKET_REGISTER_SUCCESS:
       return {
         ...state,
@@ -50,6 +52,7 @@ export default (state = initialState, action) => {
         },
         isGameRunning: true,
       };
+
     case WEBSOCKET_GAME_UPDATE: {
       const player = action.players.find(snake => snake.id === state.player.id);
       const newConf = player
@@ -58,15 +61,26 @@ export default (state = initialState, action) => {
           y: player.y / state.gameMap.scale - state.gameMap.view.height / 2,
         }
         : { x: 0, y: 0 };
+
+      const newScale = player
+        ? {
+          scale: player.scale,
+          paintWidth: 1500 / player.scale,
+          paintHeight: 1500 / player.scale,
+        }
+        : {};
+
       return {
         ...state,
         gameMap: {
           ...state.gameMap,
+          ...newScale,
           view: {
             ...state.gameMap.view,
             ...newConf,
           },
         },
+        foods: [...action.foods],
         players: [...action.players],
         player: {
           color: state.player.color,
@@ -74,6 +88,7 @@ export default (state = initialState, action) => {
         },
       };
     }
+
     case ADD_COLORED_RECT:
       return {
         ...state,
@@ -86,6 +101,7 @@ export default (state = initialState, action) => {
           },
         ],
       };
+
     default:
       return state;
   }

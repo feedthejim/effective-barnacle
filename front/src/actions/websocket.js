@@ -18,10 +18,11 @@ export const registerSuccess = player => {
   };
 };
 
-export const updateGameState = players => {
+export const updateGameState = data => {
   return {
     type: WEBSOCKET_GAME_UPDATE,
-    players,
+    players: data.snakes,
+    foods: data.foods,
   };
 };
 

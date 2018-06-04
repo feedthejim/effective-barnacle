@@ -83,15 +83,14 @@ class Background extends React.Component {
       clipWidth: w,
     };
 
-    // TODO: fix this shit
-
     return (
       <Layer>
         <Group {...clippingParams}>
           <Group
             x={clippingParams.clipX}
             y={clippingParams.clipY}
-
+            scaleX={2 - this.props.gameMap.scale}
+            scaleY={2 - this.props.gameMap.scale}
           >
             {this.state.shapes.map((shape, index) => (
               <Rect
@@ -110,4 +109,7 @@ class Background extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Background);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Background);

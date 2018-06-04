@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stage } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import GameMap from './GameMap';
 import Background from './Background';
 import { connect } from 'react-redux';
@@ -23,8 +23,10 @@ class Canvas extends React.Component {
           height={window.innerHeight}
           listening={false}
         >
-          <Background />
-          <GameMap />
+          <Layer>
+            <Background />
+            <GameMap />
+          </Layer>
         </Stage>
       )
     );

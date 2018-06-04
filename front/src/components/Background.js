@@ -16,6 +16,25 @@ const MAP_RECT_WIDTH = 150;
 const MAP_RECT_HEIGHT = 150;
 const TILE_RATIO = 1;
 
+class Tiles extends React.Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+  render() {
+    return this.props.tiles.map((shape, index) => (
+      <Rect
+        listening={false}
+        key={index}
+        x={shape.x}
+        y={shape.y}
+        width={shape.w}
+        height={shape.h}
+        fill={shape.color}
+      />
+    ));
+  }
+}
+
 class Background extends React.Component {
   constructor(props) {
     super(props);
@@ -84,29 +103,17 @@ class Background extends React.Component {
     };
 
     return (
-      <Layer hitGraphEnabled={false} listening={false}>
-        <Group {...clippingParams} listening={false}>
-          <Group
-            listening={false}
-            x={clippingParams.clipX}
-            y={clippingParams.clipY}
-            scaleX={2 - this.props.gameMap.scale}
-            scaleY={2 - this.props.gameMap.scale}
-          >
-            {this.state.shapes.map((shape, index) => (
-              <Rect
-                listening={false}
-                key={index}
-                x={shape.x}
-                y={shape.y}
-                width={shape.w}
-                height={shape.h}
-                fill={shape.color}
-              />
-            ))}
-          </Group>
+      <Group {...clippingParams} listening={false}>
+        <Group
+          listening={false}
+          x={clippingParams.clipX}
+          y={clippingParams.clipY}
+          scaleX={2 - this.props.gameMap.scale}
+          scaleY={2 - this.props.gameMap.scale}
+        >
+          <Tiles tiles={this.state.shapes} />
         </Group>
-      </Layer>
+      </Group>
     );
   }
 }

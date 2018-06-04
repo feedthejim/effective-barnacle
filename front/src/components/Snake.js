@@ -59,6 +59,7 @@ class Snake extends React.Component {
         points={points}
         stroke={this.props.color || 'black'}
         tension={0.3}
+        listening={false}
         strokeWidth={relativeW(this.props.width, this.props.gameMap)}
       />
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layer, Rect, Group } from 'react-konva';
+import { Rect, Group } from 'react-konva';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {

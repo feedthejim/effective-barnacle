@@ -29,31 +29,13 @@ class Snake extends React.Component {
     super(props);
   }
   render() {
-    let points = [];
-    let wholeLength = this.props.length;
-    if (this.props.movementQueue.length) {
-      let i = this.props.movementQueue.length - 1;
-      while (i) {
-        const movement = this.props.movementQueue[i];
-        let x = movement.x;
-        let y = movement.y;
-        if (wholeLength > 0 && wholeLength < movement.speed) {
-          const lm = this.props.movementQueue[i + 1] || this;
-          const ratio = wholeLength / movement.speed;
-          x = lm.x - (lm.x - x) * ratio;
-          y = lm.y - (lm.y - y) * ratio;
-        } else if (wholeLength < 0) {
-          break;
-        }
-
-        i--;
-        wholeLength -= movement.speed;
-        points.push(
-          relativeX(x, this.props.gameMap),
-          relativeY(y, this.props.gameMap)
-        );
-      }
-    }
+    const points = [];
+    this.props.points.forEach(({ x, y }) => {
+      points.push(
+        relativeX(x, this.props.gameMap),
+        relativeY(y, this.props.gameMap)
+      );
+    });
     return (
       <Line
         points={points}

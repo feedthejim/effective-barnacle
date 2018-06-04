@@ -42,6 +42,10 @@ export default class Snake extends GameEntity {
   private turnSpeed: number = 0.06;
   private vx: number = 0;
   private vy: number = 0;
+  private points: {
+    x: number;
+    y: number;
+  }[] = [];
 
   constructor(options?: SnakeOptions) {
     super(options);
@@ -178,7 +182,27 @@ export default class Snake extends GameEntity {
     this.x += this.vx;
     this.y += this.vy;
 
-    // avoid moving to outside
-    // gameMap.limit(this);
+    this.points = [];
+    let wholeLength = this.length;
+    if (this.movementQueue.length) {
+      let i = this.movementQueue.length - 1;
+      while (i) {
+        const movement = this.movementQueue[i];
+        let x = movement.x;
+        let y = movement.y;
+        if (wholeLength > 0 && wholeLength < movement.speed) {
+          const lm = this.movementQueue[i + 1] || this;
+          const ratio = wholeLength / movement.speed;
+          x = lm.x - (lm.x - x) * ratio;
+          y = lm.y - (lm.y - y) * ratio;
+        } else if (wholeLength < 0) {
+          break;
+        }
+
+        i -= 1;
+        wholeLength -= movement.speed;
+        this.points.push({ x, y });
+      }
+    }
   }
 }

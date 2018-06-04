@@ -13,11 +13,10 @@ const gameUpdate = schemapack.build({
       y: 'int16',
       length: 'uint16',
       scale: 'float32',
-      movementQueue: [
+      points: [
         {
           x: 'int16',
           y: 'int16',
-          speed: 'float32',
         },
       ],
       width: 'float32',

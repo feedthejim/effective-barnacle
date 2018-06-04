@@ -1,5 +1,4 @@
 import React from 'react';
-import { Layer } from 'react-konva';
 import { connect } from 'react-redux';
 import { ADD_COLORED_RECT } from '../actions/canvas';
 import Snake from './Snake';

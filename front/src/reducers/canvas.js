@@ -26,12 +26,8 @@ const initialState = {
     username: 'undefined',
     id: -1,
     radius: -1,
-    body: [
-      {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-      },
-    ],
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
     currentOrientation: [],
     color: Konva.Util.getRandomColor(),
   },
@@ -59,12 +55,8 @@ export default (state = initialState, action) => {
       const player = action.players.find(snake => snake.id === state.player.id);
       const newConf = player
         ? {
-          x:
-              player.body[0].x / state.gameMap.scale -
-              state.gameMap.view.width / 2,
-          y:
-              player.body[0].y / state.gameMap.scale -
-              state.gameMap.view.height / 2,
+          x: player.x / state.gameMap.scale - state.gameMap.view.width / 2,
+          y: player.y / state.gameMap.scale - state.gameMap.view.height / 2,
         }
         : { x: 0, y: 0 };
       return {

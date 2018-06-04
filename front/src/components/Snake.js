@@ -38,8 +38,8 @@ class Snake extends React.Component {
 
   render() {
     const snakeConfig = {
-      x: relativeX(this.props.body[0].x, this.props.gameMap),
-      y: relativeY(this.props.body[0].y, this.props.gameMap),
+      x: relativeX(this.props.x, this.props.gameMap),
+      y: relativeY(this.props.y, this.props.gameMap),
       width: relativeW(50, this.props.gameMap),
       height: relativeH(50, this.props.gameMap),
     };

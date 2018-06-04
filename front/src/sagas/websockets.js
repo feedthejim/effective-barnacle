@@ -55,7 +55,7 @@ function* externalListener(socketChannel) {
 function* internalListener(ws) {
   while (true) {
     const mouseCoords = yield take(PLAYER_MOVE);
-    ws.emit('move-player', mouseCoords);
+    ws.emit('move', mouseCoords);
     //socket.send(JSON.stringify({ type: 'setTask', status: 'open' }));
   }
 }

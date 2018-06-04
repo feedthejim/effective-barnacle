@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd ..
+
 docker network create traefik_default
 
 docker-compose build

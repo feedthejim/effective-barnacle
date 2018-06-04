@@ -1,8 +1,8 @@
 #!/bin/sh
 
-cd ..
-
-docker network create traefik_default
+if ! docker network ls | grep traefik_default; then
+    docker network create traefik_default
+fi
 
 docker-compose build
 

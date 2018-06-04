@@ -8,7 +8,34 @@ import {
 import { call, put, take, race } from 'redux-saga/effects';
 import io from 'socket.io-client';
 import { PLAYER_MOVE } from '../actions/mousemove';
+import sp from 'schemapack';
 
+const gameUpdate = sp.build({
+  snakes: [
+    {
+      id: 'uint16',
+      x: 'int16',
+      y: 'int16',
+      length: 'uint16',
+      scale: 'float32',
+      movementQueue: [
+        {
+          x: 'int16',
+          y: 'int16',
+          speed: 'float32',
+        },
+      ],
+      width: 'float32',
+    },
+  ],
+  foods: [
+    {
+      x: 'int16',
+      y: 'int16',
+      width: 'float32',
+    },
+  ],
+});
 function socketListener(ws, url, username) {
   return eventChannel(emitter => {
     const actions = bindActionCreators(webSocketActions, emitter);
@@ -19,11 +46,11 @@ function socketListener(ws, url, username) {
     actions.connectToServer(url, username);
     // });
 
-    ws.on('register-success', data => {
-      actions.registerSuccess(data);
-    });
+    ws.on('register-success', actions.registerSuccess);
 
-    ws.on('game-update', actions.updateGameState);
+    ws.on('game-update', data =>
+      actions.updateGameState(gameUpdate.decode(data))
+    );
     // ws.on('message', (e) => {
     //   // console.log(e);
     //   ws.emit('message', 'fdp');

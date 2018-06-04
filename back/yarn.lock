@@ -1460,6 +1460,10 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
+schemapack@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.npmjs.org/schemapack/-/schemapack-1.4.2.tgz#8b582a55e128e345854ce3fb380371c58264f349"
+
 semver-diff@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/semver-diff/-/semver-diff-2.1.0.tgz#4bbb8437c8d37e4b0cf1a68fd726ec6d645d6d36"

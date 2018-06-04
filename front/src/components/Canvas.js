@@ -18,7 +18,11 @@ class Canvas extends React.Component {
   render() {
     return (
       this.props.isGameRunning && (
-        <Stage width={window.innerWidth} height={window.innerHeight}>
+        <Stage
+          width={window.innerWidth}
+          height={window.innerHeight}
+          listening={false}
+        >
           <Background />
           <GameMap />
         </Stage>

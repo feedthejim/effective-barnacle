@@ -22,7 +22,7 @@ const mapDispatchToProps = dispatch => {
 class GameMap extends React.Component {
   render() {
     return (
-      <Layer>
+      <Layer hitGraphEnabled={false} listening={false}>
         {this.props.foods.map((food, index) => <Food key={index} {...food} />)}
         <Snake {...this.props.player} />
         {this.props.players.map(

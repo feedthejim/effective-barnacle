@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "nodemon": "^1.17.5",
+    "schemapack": "^1.4.2",
     "socket.io": "^2.1.1",
     "ts-node": "^6.0.4",
     "typescript": "^2.8.3"

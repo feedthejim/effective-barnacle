@@ -84,9 +84,10 @@ class Background extends React.Component {
     };
 
     return (
-      <Layer>
-        <Group {...clippingParams}>
+      <Layer hitGraphEnabled={false} listening={false}>
+        <Group {...clippingParams} listening={false}>
           <Group
+            listening={false}
             x={clippingParams.clipX}
             y={clippingParams.clipY}
             scaleX={2 - this.props.gameMap.scale}
@@ -94,6 +95,7 @@ class Background extends React.Component {
           >
             {this.state.shapes.map((shape, index) => (
               <Rect
+                listening={false}
                 key={index}
                 x={shape.x}
                 y={shape.y}

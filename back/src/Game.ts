@@ -3,6 +3,34 @@ import Snake from './entities/Snake';
 import { Server, Socket } from 'socket.io';
 import Food from './entities/Food';
 import GameEntity from './entities/GameEntity';
+const schemapack = require('schemapack');
+
+const gameUpdate = schemapack.build({
+  snakes: [
+    {
+      id: 'uint16',
+      x: 'int16',
+      y: 'int16',
+      length: 'uint16',
+      scale: 'float32',
+      movementQueue: [
+        {
+          x: 'int16',
+          y: 'int16',
+          speed: 'float32',
+        },
+      ],
+      width: 'float32',
+    },
+  ],
+  foods: [
+    {
+      x: 'int16',
+      y: 'int16',
+      width: 'float32',
+    },
+  ],
+});
 
 const {
   MAP_HEIGHT,
@@ -50,7 +78,7 @@ export class Game {
         new Food({
           x: ~~(Math.random() * (MAP_WIDTH - 100) + 100 / 2),
           y: ~~(Math.random() * (MAP_HEIGHT - 100) + 100 / 2),
-          size: 30,
+          size: 10,
           value: INITIAL_FOOD_VALUE,
         }),
       );
@@ -104,7 +132,13 @@ export class Game {
       });
       this.limit(snake);
     });
-    this.wss.emit('game-update', { snakes: this.snakes, foods: this.foods });
+    this.wss.emit(
+      'game-update',
+      gameUpdate.encode({
+        snakes: this.snakes,
+        foods: this.foods,
+      }),
+    );
   }
 
   // limit element, prevent it moving to outside

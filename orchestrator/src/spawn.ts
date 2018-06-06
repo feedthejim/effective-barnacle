@@ -42,7 +42,7 @@ export default async function spawnServer(servers: IServer[]): Promise<IServer> 
     _id,
     url,
     port,
-    clients: 1,
+    clients: 0,
   });
 
   server.save();

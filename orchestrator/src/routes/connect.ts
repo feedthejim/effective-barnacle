@@ -16,12 +16,12 @@ export default async function connect(req: express.Request, res: express.Respons
 
   let server = await findFreeServer(servers);
 
-  if (server) {
-    server.clients++;
-    server.save();
-  } else {
+  if (!server) {
     server = await spawnServer(servers);
   }
+
+  server.clients++;
+  server.save();
 
   res.json(server);
 }

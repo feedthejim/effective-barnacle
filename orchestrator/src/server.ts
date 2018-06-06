@@ -1,18 +1,15 @@
 import * as express from 'express';
 import * as mongoose from 'mongoose';
 
-const MONGO_HOST = process.env.EB_MONGO_HOST || 'localhost';
-mongoose.connect(`mongodb://${MONGO_HOST}/barnacle`);
-
 import basicAuth from './middlewares/auth';
 import connect from './routes/connect';
 import disconnect from './routes/disconnect';
 import admin from './routes/admin';
 import { Server } from './models/server';
 import spawnServer from './spawn';
+import { MONGO_HOST, PORT, DEFAULT_SERVERS_NB } from './env';
 
-const PORT = process.env.EB_ORCHESTRATOR_PORT || 9000;
-const DEFAULT_SERVERS_NB = process.env.EB_DEFAULT_SERVERS_NB || 5;
+mongoose.connect(`mongodb://${MONGO_HOST}/barnacle`);
 
 const app = express();
 

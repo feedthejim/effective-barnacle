@@ -4,8 +4,7 @@ import * as shortid from 'shortid';
 
 import { Server, IServer } from '../models/server';
 import spawnServer from '../spawn';
-
-const MAX_CLIENTS_PER_SERVER = process.env.EB_MAX_CLIENTS_PER_SERVER || 5;
+import { MAX_CLIENTS_PER_SERVER } from '../env';
 
 function findFreeServer(servers: IServer[]): IServer {
   return servers.find((server: IServer) => server.clients < MAX_CLIENTS_PER_SERVER);

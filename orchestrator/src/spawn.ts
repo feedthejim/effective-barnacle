@@ -2,9 +2,7 @@ import * as Docker from 'dockerode';
 import * as shortid from 'shortid';
 
 import { Server, IServer } from './models/server';
-
-const SERVER_IMAGE = process.env.EB_SERVER_DOCKER_IMAGE || 'eb-back';
-const DOMAIN_NAME = process.env.EB_DOMAIN_NAME || 'localhost';
+import { DOMAIN_NAME, SERVER_IMAGE } from './env';
 
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 

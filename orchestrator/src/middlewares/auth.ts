@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as auth from 'basic-auth';
 
-const SECRET = process.env.EB_ORCHESTRATOR_SECRET || 'secret';
+import { SECRET } from '../env';
 
 export default function basicAuth(req: express.Request, res: express.Response,
                                   next: express.NextFunction) {

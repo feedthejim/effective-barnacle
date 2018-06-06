@@ -43,8 +43,18 @@ const {
 } = config;
 
 const collision = (
-  dom: GameEntity,
-  dom2: GameEntity,
+  dom: {
+    x: number;
+    y: number;
+    width?: number;
+    height?: number;
+  },
+  dom2: {
+    x: number;
+    y: number;
+    width?: number;
+    height?: number;
+  },
   isRect?: boolean,
 ): boolean => {
   const disX = dom.x - dom2.x;
@@ -114,8 +124,28 @@ export class Game {
   }
 
   private run() {
+    const snakeDeleted: Map<number, Snake> = new Map();
+
     this.snakes.forEach((snake: Snake) => {
       snake.update();
+
+      this.snakes.forEach((snake2: Snake) => {
+        snake2.points.forEach((point: { x: number; y: number }) => {
+          if (
+            snake2.id !== snake.id &&
+            collision(snake, {
+              ...point,
+              width: snake2.width,
+              height: snake2.height,
+            })
+          ) {
+            if (!snakeDeleted.has(snake.id)) {
+              snakeDeleted.set(snake.id, snake);
+            }
+          }
+        });
+      });
+
       this.foods.forEach((food: Food) => {
         food.update();
         if (!collision(snake, food)) {
@@ -131,6 +161,23 @@ export class Game {
       });
       this.limit(snake);
     });
+
+    snakeDeleted.forEach((snake: Snake) => {
+      this.snakes.splice(this.snakes.indexOf(snake), 1);
+      snake.points.forEach(
+        (point, index) =>
+          index % 10 === 0 &&
+          this.foods.push(
+            new Food({
+              x: point.x,
+              y: point.y,
+              size: 10,
+              value: INITIAL_FOOD_VALUE,
+            }),
+          ),
+      );
+    });
+
     this.wss.emit(
       'game-update',
       gameUpdate.encode({

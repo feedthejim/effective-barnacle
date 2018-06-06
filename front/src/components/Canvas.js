@@ -3,6 +3,7 @@ import { Stage, Layer } from 'react-konva';
 import GameMap from './GameMap';
 import Background from './Background';
 import { connect } from 'react-redux';
+// import LinearBackground from './LinearBackground';
 
 const mapStateToProps = state => {
   return {

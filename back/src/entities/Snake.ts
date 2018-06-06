@@ -42,7 +42,7 @@ export default class Snake extends GameEntity {
   private turnSpeed: number = 0.06;
   private vx: number = 0;
   private vy: number = 0;
-  private points: {
+  public points: {
     x: number;
     y: number;
   }[] = [];

@@ -33,6 +33,7 @@ export default async function spawnServer(servers: IServer[]): Promise<IServer> 
     },
     ExposedPorts: { [`${port}/tcp`]: {} },
     NetworkMode: 'traefik_default',
+    Env: [`EB_SERVER_ID=${_id}`],
     name: _id,
   });
 

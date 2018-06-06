@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layer, Rect, Group } from 'react-konva';
+import { Rect, Group } from 'react-konva';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -15,6 +15,25 @@ const mapDispatchToProps = (/* dispatch*/) => {
 const MAP_RECT_WIDTH = 150;
 const MAP_RECT_HEIGHT = 150;
 const TILE_RATIO = 1;
+
+class Tiles extends React.Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+  render() {
+    return this.props.tiles.map((shape, index) => (
+      <Rect
+        listening={false}
+        key={index}
+        x={shape.x}
+        y={shape.y}
+        width={shape.w}
+        height={shape.h}
+        fill={shape.color}
+      />
+    ));
+  }
+}
 
 class Background extends React.Component {
   constructor(props) {
@@ -38,7 +57,6 @@ class Background extends React.Component {
         color = color === colors[0] ? colors[1] : colors[0];
       }
     }
-
     this.state = {
       shapes,
     };
@@ -73,8 +91,8 @@ class Background extends React.Component {
 
     const cx = endX - beginX;
     const cy = endY - beginY;
-    const w = cx < tileWidth ? cx : tileWidth;
-    const h = cy < tileHeigth ? cy : tileHeigth;
+    const w = cx > tileWidth ? cx : tileWidth;
+    const h = cy > tileHeigth ? cy : tileHeigth;
 
     const clippingParams = {
       clipX: beginX,
@@ -83,31 +101,78 @@ class Background extends React.Component {
       clipWidth: w,
     };
 
-    // TODO: fix this shit
+    // const clippingParams2 = {
+    //   clipX: beginX + w,
+    //   clipY: beginY,
+    //   clipHeight: h,
+    //   clipWidth: w,
+    // };
 
+    // const clippingParams3 = {
+    //   clipX: beginX,
+    //   clipY: beginY + h,
+    //   clipHeight: h,
+    //   clipWidth: w,
+    // };
+
+    // const clippingParams4 = {
+    //   clipX: beginX + w,
+    //   clipY: beginY + h,
+    //   clipHeight: h,
+    //   clipWidth: w,
+    // };
     return (
-      <Layer>
-        <Group {...clippingParams}>
+      <React.Fragment>
+        <Group {...clippingParams} listening={false}>
           <Group
+            listening={false}
             x={clippingParams.clipX}
             y={clippingParams.clipY}
-
+            scaleX={2 - this.props.gameMap.scale}
+            scaleY={2 - this.props.gameMap.scale}
           >
-            {this.state.shapes.map((shape, index) => (
-              <Rect
-                key={index}
-                x={shape.x}
-                y={shape.y}
-                width={shape.w}
-                height={shape.h}
-                fill={shape.color}
-              />
-            ))}
+            <Tiles tiles={this.state.shapes} />
           </Group>
         </Group>
-      </Layer>
+        {/* <Group {...clippingParams2} listening={false}>
+          <Group
+            listening={false}
+            x={clippingParams2.clipX}
+            y={clippingParams2.clipY}
+            scaleX={2 - this.props.gameMap.scale}
+            scaleY={2 - this.props.gameMap.scale}
+          >
+            <Tiles tiles={this.state.shapes} />
+          </Group>
+        </Group>
+        <Group {...clippingParams3} listening={false}>
+          <Group
+            listening={false}
+            x={clippingParams3.clipX}
+            y={clippingParams3.clipY}
+            scaleX={2 - this.props.gameMap.scale}
+            scaleY={2 - this.props.gameMap.scale}
+          >
+            <Tiles tiles={this.state.shapes} />
+          </Group>
+        </Group>
+        <Group {...clippingParams4} listening={false}>
+          <Group
+            listening={false}
+            x={clippingParams4.clipX}
+            y={clippingParams4.clipY}
+            scaleX={2 - this.props.gameMap.scale}
+            scaleY={2 - this.props.gameMap.scale}
+          >
+            <Tiles tiles={this.state.shapes} />
+          </Group>
+        </Group> */}
+      </React.Fragment>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Background);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Background);

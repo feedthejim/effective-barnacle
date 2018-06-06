@@ -9,11 +9,7 @@ const sagaMiddleware = createSagaMiddleware();
 export default createStore(
   reducers,
   {},
-  composeWithDevTools(
-    applyMiddleware(
-      sagaMiddleware
-    )
-  )
+  composeWithDevTools(applyMiddleware(sagaMiddleware))
 );
 
 sagaMiddleware.run(rootSaga);

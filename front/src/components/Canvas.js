@@ -1,8 +1,15 @@
 import React from 'react';
-import { Stage } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import GameMap from './GameMap';
 import Background from './Background';
+import { connect } from 'react-redux';
+// import LinearBackground from './LinearBackground';
 
+const mapStateToProps = state => {
+  return {
+    isGameRunning: state.canvas.isGameRunning,
+  };
+};
 class Canvas extends React.Component {
   constructor(props) {
     super(props);
@@ -11,12 +18,20 @@ class Canvas extends React.Component {
 
   render() {
     return (
-      <Stage width={window.innerWidth} height={window.innerHeight}>
-        <Background />
-        <GameMap />
-      </Stage>
+      this.props.isGameRunning && (
+        <Stage
+          width={window.innerWidth}
+          height={window.innerHeight}
+          listening={false}
+        >
+          <Layer>
+            <Background />
+            <GameMap />
+          </Layer>
+        </Stage>
+      )
     );
   }
 }
 
-export default Canvas;
+export default connect(mapStateToProps)(Canvas);

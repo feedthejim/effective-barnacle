@@ -8,6 +8,7 @@
     "dev": "nodemon"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "nodemon": "^1.17.5",
     "schemapack": "^1.4.2",
     "socket.io": "^2.1.1",

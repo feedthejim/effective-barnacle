@@ -1,6 +1,7 @@
 import config from './config';
 import Snake from './entities/Snake';
 import { Server, Socket } from 'socket.io';
+import axios from 'axios';
 import Food from './entities/Food';
 import GameEntity from './entities/GameEntity';
 const schemapack = require('schemapack');
@@ -127,6 +128,12 @@ export class Game {
 
       ws.on('player-speed-down', () => {
         currentPlayer.speedDown();
+      });
+
+      ws.on('disconnect', () => {
+        axios.get(
+          `http://localhost:9000/disconnect/${process.env.EB_SERVER_ID}`,
+        );
       });
     });
   }

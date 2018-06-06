@@ -99,7 +99,10 @@ function* webSocketSaga() {
     const { data } = yield axios.get('http://localhost:9000/connect');
     console.log(data);
 
-    const ws = io(`ws://${data.url}:${data.port}`);
+    const ws = io(`ws://${data.url}`, {
+      transports: ['websocket'],
+      upgrade: false,
+    });
 
     const socketChannel = yield call(socketListener, ws, payload.name);
 

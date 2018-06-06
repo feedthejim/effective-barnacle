@@ -13,4 +13,6 @@ export default {
   INITIAL_FOOD_COUNT: 100,
   INITIAL_FOOD_VALUE: 100,
   INITIAL_SCALE: 1,
+
+  ORCHESTRATOR_URL: process.env.EB_ORCHESTRATOR_URL || 'localhost:9000',
 };

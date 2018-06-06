@@ -41,6 +41,7 @@ const {
   GAMELOOP_RATE,
   INITIAL_FOOD_COUNT,
   INITIAL_FOOD_VALUE,
+  ORCHESTRATOR_URL,
 } = config;
 
 const collision = (
@@ -132,7 +133,7 @@ export class Game {
 
       ws.on('disconnect', () => {
         axios.get(
-          `http://localhost:9000/disconnect/${process.env.EB_SERVER_ID}`,
+          `http://${ORCHESTRATOR_URL}/disconnect/${process.env.EB_SERVER_ID}`,
         );
       });
     });

@@ -25,7 +25,7 @@ export default async function spawnServer(servers: IServer[]): Promise<IServer> 
   const url = `eb-arena-${_id}.${DOMAIN_NAME}`;
   const port = await getUnusedPort(servers);
 
-  docker.run(SERVER_IMAGE, ['yarn', 'start', '--', `${port}`], null, {
+  docker.run(SERVER_IMAGE, ['yarn', 'start'], null, {
     Labels: {
       'traefik.enable': 'true',
       'traefik.frontend.rule': `Host:${url}`,
@@ -33,7 +33,7 @@ export default async function spawnServer(servers: IServer[]): Promise<IServer> 
     },
     ExposedPorts: { [`${port}/tcp`]: {} },
     NetworkMode: 'traefik_default',
-    Env: [`EB_SERVER_ID=${_id}`],
+    Env: [`EB_SERVER_ID=${_id}`, `EB_SERVER_PORT=${port}`],
     name: _id,
   });
 

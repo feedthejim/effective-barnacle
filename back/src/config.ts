@@ -2,7 +2,7 @@ export default {
   MAP_WIDTH: 1500,
   MAP_HEIGHT: 1500,
 
-  SOCKET_PORT: 4242,
+  SOCKET_PORT: process.env.EB_SERVER_PORT || 4242,
   SPEED: 4,
   BASE_ANGLE: Math.PI * 200,
 

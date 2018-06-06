@@ -4,8 +4,10 @@ import * as mongoose from 'mongoose';
 const MONGO_HOST = process.env.EB_MONGO_HOST || 'localhost';
 mongoose.connect(`mongodb://${MONGO_HOST}/barnacle`);
 
+import basicAuth from './middlewares/auth';
 import connect from './routes/connect';
 import disconnect from './routes/disconnect';
+import admin from './routes/admin';
 import { Server } from './models/server';
 import spawnServer from './spawn';
 
@@ -14,8 +16,13 @@ const DEFAULT_SERVERS_NB = process.env.EB_DEFAULT_SERVERS_NB || 5;
 
 const app = express();
 
+app.use(basicAuth);
+
+app.set('view engine', 'ejs');
+
 app.get('/connect', connect);
 app.get('/disconnect/:serverId', disconnect);
+app.get('/', admin);
 
 app.listen(PORT, async () => {
   for (let i = 0; i < DEFAULT_SERVERS_NB; ++i) {

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Effective Barnacle Admin</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <h3 class="spaced">Effective Barnacle Admin</h3>
+
+    <h4 class="spaced">
+      <b>
+        <%= servers.length %>
+      </b> servers up</h4>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">URL</th>
+          <th scope="col">Port</th>
+          <th scope="col">Clients</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% servers.forEach(server => { %>
+          <tr>
+            <td>
+              <%= server._id %>
+            </td>
+            <td>
+              <a href="http://<%= server.url %>">
+                <%= server.url %>
+              </a>
+            </td>
+            <td>
+              <%= server.port %>
+            </td>
+            <td>
+              <%= server.clients %> /
+                <%= maxClientsPerServer %>
+            </td>
+          </tr>
+          <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>
+
+<style>
+  .spaced {
+    margin: 30px 0;
+  }
+</style>

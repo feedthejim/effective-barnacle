@@ -120,6 +120,14 @@ export class Game {
       ws.on('move', (orientation: any) => {
         if (currentPlayer) currentPlayer.moveTo(orientation.x, orientation.y);
       });
+
+      ws.on('player-speed-up', () => {
+        currentPlayer.speedUp();
+      });
+
+      ws.on('player-speed-down', () => {
+        currentPlayer.speedDown();
+      });
     });
   }
 

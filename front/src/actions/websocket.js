@@ -6,7 +6,6 @@ export const WEBSOCKET_GAME_UPDATE = 'WEBSOCKET_GAME_UPDATE';
 export const connectToServer = (url, username) => {
   return {
     type: WEBSOCKET_CONNECT,
-    url,
     username,
   };
 };

@@ -14,7 +14,6 @@ const mapDispatchToProps = dispatch => {
     connect: username =>
       dispatch({
         type: WEBSOCKET_CONNECT,
-        url: 'ws://localhost:4242',
         username,
       }),
   };
@@ -23,16 +22,41 @@ const mapDispatchToProps = dispatch => {
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      value: '',
+    };
   }
 
   componentDidMount() {
-    this.props.connect('Jimmy');
+    // this.props.connect('Jimmy');
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
+
+  click() {
+    console.log('mdr');
+    this.props.connect(this.state.value);
   }
 
   render() {
-    return this.props.isGameRunning && <Canvas />;
+    return this.props.isGameRunning ? (
+      <Canvas />
+    ) : (
+      <div>
+        <input
+          type="text"
+          value={this.state.value}
+          onChange={event => this.handleChange(event)}
+        />
+        <button onClick={() => this.click()}>Connect</button>
+      </div>
+    );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

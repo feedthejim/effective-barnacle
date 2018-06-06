@@ -13,6 +13,7 @@ import {
   PLAYER_SPEED_DOWN,
 } from '../actions/mousemove';
 import sp from 'schemapack';
+import axios from 'axios';
 
 const gameUpdate = sp.build({
   snakes: [
@@ -40,14 +41,14 @@ const gameUpdate = sp.build({
   ],
 });
 
-function socketListener(ws, url, username) {
+function socketListener(ws, username) {
   return eventChannel(emitter => {
     const actions = bindActionCreators(webSocketActions, emitter);
 
     // ws.on('connect', () => {
     //   console.log('Connected!');
     ws.emit('register', username);
-    actions.connectToServer(url, username);
+    // actions.connectToServer(url, username);
     // });
 
     ws.on('register-success', actions.registerSuccess);
@@ -94,10 +95,13 @@ function* internalListener(ws) {
 
 function* webSocketSaga() {
   while (true) {
-    const data = yield take(WEBSOCKET_CONNECT);
-    const ws = io('ws://localhost:4242');
+    const payload = yield take(WEBSOCKET_CONNECT);
+    const { data } = yield axios.get('http://localhost:9000/connect');
+    console.log(data);
 
-    const socketChannel = yield call(socketListener, ws, data.url, data.name);
+    const ws = io(`ws://${data.url}:${data.port}`);
+
+    const socketChannel = yield call(socketListener, ws, payload.name);
 
     const { cancel } = yield race({
       task: [call(externalListener, socketChannel), call(internalListener, ws)],

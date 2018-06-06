@@ -5,6 +5,7 @@ import {
   PLAYER_SPEED_DOWN,
   PLAYER_SPEED_UP,
 } from '../actions/mousemove';
+import { WEBSOCKET_CONNECT } from '../actions/websocket';
 
 const createMouseChannel = () => {
   return eventChannel(emitter => {
@@ -43,6 +44,7 @@ const createMouseChannel = () => {
 };
 
 const mouseMoveSaga = function*() {
+  yield take(WEBSOCKET_CONNECT);
   const mouseMoveChannel = yield call(createMouseChannel);
   while (true) {
     const action = yield take(mouseMoveChannel);

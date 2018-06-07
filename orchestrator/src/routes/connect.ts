@@ -19,8 +19,5 @@ export default async function connect(req: express.Request, res: express.Respons
     server = await spawnServer(servers);
   }
 
-  server.clients++;
-  server.save();
-
   res.json(server);
 }

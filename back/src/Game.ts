@@ -42,6 +42,7 @@ const {
   INITIAL_FOOD_COUNT,
   INITIAL_FOOD_VALUE,
   ORCHESTRATOR_URL,
+  ORCHESTRATOR_SECRET,
 } = config;
 
 const collision = (
@@ -96,11 +97,31 @@ export class Game {
     }
   }
 
+  private confirmConnection() {
+    axios.get(
+      `http://${ORCHESTRATOR_URL}/confirm/${process.env.EB_SERVER_ID}`, {
+        auth: {
+          username: '',
+          password: ORCHESTRATOR_SECRET,
+        },
+        withCredentials: true,
+      },
+    );
+  }
+
+  private disconnect() {
+    axios.get(
+      `http://${ORCHESTRATOR_URL}/disconnect/${process.env.EB_SERVER_ID}`,
+    );
+  }
+
   public init() {
     this.wss.listen(SOCKET_PORT);
     setInterval(() => this.run(), GAMELOOP_RATE);
 
     this.wss.on('connection', (ws: Socket) => {
+      this.confirmConnection();
+
       let currentPlayer: Snake;
 
       ws.on('register', (username: string) => {
@@ -132,9 +153,7 @@ export class Game {
       });
 
       ws.on('disconnect', () => {
-        axios.get(
-          `http://${ORCHESTRATOR_URL}/disconnect/${process.env.EB_SERVER_ID}`,
-        );
+        this.disconnect();
       });
     });
   }

@@ -15,4 +15,5 @@ export default {
   INITIAL_SCALE: 1,
 
   ORCHESTRATOR_URL: process.env.EB_ORCHESTRATOR_URL || 'localhost:9000',
+  ORCHESTRATOR_SECRET: process.env.EB_ORCHESTRATOR_SECRET || 'secret',
 };

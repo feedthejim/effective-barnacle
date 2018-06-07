@@ -2,7 +2,7 @@ import * as Docker from 'dockerode';
 import * as shortid from 'shortid';
 
 import { Server, IServer } from './models/server';
-import { DOMAIN_NAME, SERVER_IMAGE } from './env';
+import { DOMAIN_NAME, SERVER_IMAGE, SECRET } from './env';
 
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
@@ -36,6 +36,7 @@ export default async function spawnServer(servers: IServer[]): Promise<IServer> 
     Env: [
       `EB_SERVER_ID=${_id}`,
       `EB_SERVER_PORT=${port}`,
+      `EB_SERVER_SECRET=${SECRET}`,
       `EB_ORCHESTRATOR_URL=orchestrator.${DOMAIN_NAME}`,
     ],
     name: _id,

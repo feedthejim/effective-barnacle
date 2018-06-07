@@ -157,6 +157,8 @@ export class Game {
       });
 
       ws.on('disconnect', () => {
+        this.snakes.splice(this.snakes.indexOf(currentPlayer), 1);
+        currentPlayer = undefined;
         this.disconnect();
       });
     });

@@ -12,6 +12,11 @@ export default async function disconnect(req: express.Request, res: express.Resp
   const servers = await Server.find({}).exec();
   const server = servers.find((server: IServer) => server._id === serverId);
 
+  if (!server) {
+    res.sendStatus(404);
+    return;
+  }
+
   if (servers.length > DEFAULT_SERVERS_NB && server.clients <= 1) {
     server.remove();
     docker.getContainer(serverId).kill().then((container: Docker.Container) => {

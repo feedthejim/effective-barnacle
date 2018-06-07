@@ -4,12 +4,14 @@ import { Server, Socket } from 'socket.io';
 import axios from 'axios';
 import Food from './entities/Food';
 import GameEntity from './entities/GameEntity';
+import * as shortid from 'shortid';
+
 const schemapack = require('schemapack');
 
 const gameUpdate = schemapack.build({
   snakes: [
     {
-      id: 'uint16',
+      id: 'string',
       x: 'int16',
       y: 'int16',
       length: 'uint16',
@@ -99,7 +101,8 @@ export class Game {
 
   private confirmConnection() {
     axios.get(
-      `http://${ORCHESTRATOR_URL}/confirm/${process.env.EB_SERVER_ID}`, {
+      `http://${ORCHESTRATOR_URL}/confirm/${process.env.EB_SERVER_ID}`,
+      {
         auth: {
           username: '',
           password: ORCHESTRATOR_SECRET,
@@ -126,7 +129,7 @@ export class Game {
 
       ws.on('register', (username: string) => {
         currentPlayer = new Snake({
-          id: this.snakes.length,
+          id: shortid.generate(),
           size: 30,
           length: 280,
           angle: Math.random() * 2 * Math.PI,
@@ -159,7 +162,7 @@ export class Game {
   }
 
   private run() {
-    const snakeDeleted: Map<number, Snake> = new Map();
+    const snakeDeleted: Map<string, Snake> = new Map();
 
     this.snakes.forEach((snake: Snake) => {
       snake.update();

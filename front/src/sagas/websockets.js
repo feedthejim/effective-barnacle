@@ -18,7 +18,7 @@ import axios from 'axios';
 const gameUpdate = sp.build({
   snakes: [
     {
-      id: 'uint16',
+      id: 'string',
       x: 'int16',
       y: 'int16',
       length: 'uint16',
@@ -96,10 +96,14 @@ function* internalListener(ws) {
 function* webSocketSaga() {
   while (true) {
     const payload = yield take(WEBSOCKET_CONNECT);
-    const { data } = yield axios.get('http://localhost:9000/connect');
-    console.log(data);
-
-    const ws = io(`ws://${data.url}`, {
+    let data = undefined;
+    try {
+      const response = yield axios.get('http://localhost:9000/connect');
+      data = response.data.url;
+    } catch (e) {
+      data = 'localhost:4242';
+    }
+    const ws = io(`ws://${data}`, {
       transports: ['websocket'],
       upgrade: false,
     });

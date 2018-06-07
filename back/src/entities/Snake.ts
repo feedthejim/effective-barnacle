@@ -5,7 +5,7 @@ import config from '../config';
 const { SPEED, BASE_ANGLE, INITIAL_SCALE } = config;
 
 interface SnakeOptions extends GameEntityOptions {
-  id: number;
+  id: string;
   length?: number;
   angle?: number;
   fillColor?: string;
@@ -27,7 +27,7 @@ export default class Snake extends GameEntity {
   public fillColor: string = '';
   public angle: number;
   public stopped: boolean = false;
-  public id: number;
+  public id: string;
   public scale: number = INITIAL_SCALE;
 
   // save snake's movement

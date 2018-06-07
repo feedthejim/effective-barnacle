@@ -23,7 +23,7 @@ class GameMap extends React.Component {
     return (
       <React.Fragment>
         {this.props.foods.map((food, index) => <Food key={index} {...food} />)}
-        <Snake {...this.props.player} />
+        {this.props.player.points.length > 0 && <Snake {...this.props.player} />}
         {this.props.players.map(
           (player, index) =>
             player.id !== this.props.player.id ? (

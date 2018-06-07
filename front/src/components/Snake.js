@@ -1,5 +1,5 @@
 import React from 'react';
-import { Line } from 'react-konva';
+import { Line} from 'react-konva';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -37,13 +37,27 @@ class Snake extends React.Component {
       );
     });
     return (
-      <Line
-        points={points}
-        stroke={this.props.fillColor}
-        tension={0.3}
-        listening={false}
-        strokeWidth={relativeW(this.props.width, this.props.gameMap)}
-      />
+      <React.Fragment>
+        <Line
+          points={points}
+          stroke={this.props.fillColor}
+          //tension={0.3}
+          listening={false}
+          lineCap="round"
+          lineJoin="round"
+          tension={0.3}
+          strokeWidth={relativeW(this.props.width, this.props.gameMap)}
+        />
+        {/* {this.props.points.map((point, index) => (
+          <Circle
+            key={index}
+            x={point.x}
+            y={point.y}
+            fillColor={this.props.fillColor}
+            width={relativeW(this.props.width, this.props.gameMap)}
+          />
+        ))} */}
+      </React.Fragment>
     );
   }
 }

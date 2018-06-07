@@ -26,6 +26,7 @@ const initialState = {
   foods: [],
   player: {
     username: 'undefined',
+    points: [],
     id: -1,
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,

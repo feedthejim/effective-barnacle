@@ -7,6 +7,7 @@ import {
 } from '../actions/websocket';
 
 const initialState = {
+  gameOver: false,
   isGameRunning: false,
   gameMap: {
     width: 1500,
@@ -55,7 +56,7 @@ export default (state = initialState, action) => {
 
     case WEBSOCKET_GAME_UPDATE: {
       const player = action.players.find(snake => snake.id === state.player.id);
-      
+
       const newConf = player
         ? {
           x: player.x / state.gameMap.scale - state.gameMap.view.width / 2,
@@ -73,6 +74,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
+        gameOver: !player,
         gameMap: {
           ...state.gameMap,
           ...newScale,

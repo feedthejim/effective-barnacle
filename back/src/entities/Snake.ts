@@ -1,6 +1,7 @@
 import GameEntity, { GameEntityOptions } from './GameEntity';
 import Food from './Food';
 import config from '../config';
+import randomcolor = require('randomcolor');
 
 const { SPEED, BASE_ANGLE, INITIAL_SCALE } = config;
 
@@ -51,7 +52,7 @@ export default class Snake extends GameEntity {
     super(options);
     this.id = options.id;
     const strokeColor: string = options.strokeColor || '#000';
-    this.fillColor = options.fillColor || '#fff';
+    this.fillColor = randomcolor();
     this.toAngle = this.angle = (options.angle || 0) + BASE_ANGLE;
     this.length = options.length;
     this.updateSize();

@@ -29,7 +29,7 @@ const initialState = {
     id: -1,
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
-    color: Konva.Util.getRandomColor(),
+    fillColor: Konva.Util.getRandomColor(),
   },
 };
 
@@ -86,7 +86,6 @@ export default (state = initialState, action) => {
         foods: [...action.foods],
         players: [...action.players],
         player: {
-          color: state.player.color,
           ...(player ? player : state.player),
         },
       };

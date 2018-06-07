@@ -23,6 +23,7 @@ const gameUpdate = sp.build({
       y: 'int16',
       length: 'uint16',
       scale: 'float32',
+      fillColor: 'string',
       points: [
         {
           x: 'int16',

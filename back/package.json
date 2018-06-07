@@ -8,9 +8,11 @@
     "dev": "nodemon"
   },
   "dependencies": {
+    "@types/randomcolor": "^0.4.3",
     "@types/shortid": "^0.0.29",
     "axios": "^0.18.0",
     "nodemon": "^1.17.5",
+    "randomcolor": "^0.5.3",
     "schemapack": "^1.4.2",
     "shortid": "^2.2.8",
     "socket.io": "^2.1.1",

@@ -6,7 +6,7 @@ export default {
   SPEED: 5,
   BASE_ANGLE: Math.PI * 200,
 
-  GAMELOOP_RATE: 25,
+  GAMELOOP_RATE: 16,
   MAP_RECT_WIDTH: 150,
   MAP_RECT_HEIGHT: 150,
 

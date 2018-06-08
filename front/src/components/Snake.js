@@ -24,7 +24,7 @@ const relativeH = (height, gameMap) => {
   return height / gameMap.scale;
 };
 
-class Snake extends React.Component {
+class Snake extends React.PureComponent {
   constructor(props) {
     super(props);
   }

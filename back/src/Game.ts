@@ -28,9 +28,11 @@ const gameUpdate = schemapack.build({
   ],
   foods: [
     {
+      id: 'string',
       x: 'int16',
       y: 'int16',
       width: 'float32',
+      height: 'float32',
     },
   ],
 });
@@ -91,6 +93,7 @@ export class Game {
     for (let i = 0; i < INITIAL_FOOD_COUNT; i += 1) {
       this.foods.push(
         new Food({
+          id: shortid.generate(),
           x: ~~(Math.random() * (MAP_WIDTH - 100) + 100 / 2),
           y: ~~(Math.random() * (MAP_HEIGHT - 100) + 100 / 2),
           size: 10,
@@ -210,6 +213,7 @@ export class Game {
           index % 10 === 0 &&
           this.foods.push(
             new Food({
+              id: shortid.generate(),
               x: point.x,
               y: point.y,
               size: 10,

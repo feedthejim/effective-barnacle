@@ -35,7 +35,7 @@ class Tiles extends React.Component {
   }
 }
 
-class Background extends React.Component {
+class Background extends React.PureComponent {
   constructor(props) {
     super(props);
 

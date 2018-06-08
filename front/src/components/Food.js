@@ -24,14 +24,15 @@ const relativeH = (height, gameMap) => {
   return height / gameMap.scale;
 };
 
-class Food extends React.Component {
+class Food extends React.PureComponent {
   constructor(props) {
     super(props);
-    // this.circle = React.createRef();
+    this.circle = React.createRef();
   }
 
-  componentDidUpdate() {
-  //   this.circle.cache();
+  componentDidMount() {
+    // this.circle.current.cache();
+    // console.log(this.circle);
   }
 
   render() {
@@ -67,9 +68,11 @@ class Food extends React.Component {
     return (
       <Circle
         {...foodConfig}
+        ref={this.circle}
         fill={'red'}
         stroke={'black'}
         listening={false}
+        // transformsEnabled="position"
         // strokeWidth={4}
         //   points={points}
         //   stroke={this.props.color || 'black'}

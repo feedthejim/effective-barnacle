@@ -37,7 +37,9 @@ const gameUpdate = sp.build({
     {
       x: 'int16',
       y: 'int16',
+      id: 'string',
       width: 'float32',
+      height: 'float32',
     },
   ],
 });

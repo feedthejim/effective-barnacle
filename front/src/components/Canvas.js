@@ -10,7 +10,7 @@ const mapStateToProps = state => {
     isGameRunning: state.canvas.isGameRunning,
   };
 };
-class Canvas extends React.Component {
+class Canvas extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {};

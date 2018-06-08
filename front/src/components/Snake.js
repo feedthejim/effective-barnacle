@@ -1,5 +1,5 @@
 import React from 'react';
-import { Line} from 'react-konva';
+import { Line } from 'react-konva';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -36,12 +36,15 @@ class Snake extends React.PureComponent {
         relativeY(y, this.props.gameMap)
       );
     });
+
     return (
       <React.Fragment>
         <Line
           points={points}
           stroke={this.props.fillColor}
           //tension={0.3}
+          shadowColor="white"
+          shadowEnabled={this.props.isSpeedUp}
           listening={false}
           lineCap="round"
           lineJoin="round"

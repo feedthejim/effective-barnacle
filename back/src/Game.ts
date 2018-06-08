@@ -14,6 +14,7 @@ const gameUpdate = schemapack.build({
       id: 'string',
       x: 'int16',
       y: 'int16',
+      isSpeedUp: 'bool',
       length: 'uint16',
       scale: 'float32',
       fillColor: 'string',

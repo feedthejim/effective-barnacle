@@ -1,5 +1,5 @@
 import React from 'react';
-import { Line } from 'react-konva';
+import { Line, Label, Tag, Text } from 'react-konva';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -53,13 +53,30 @@ class Snake extends React.PureComponent {
         />
         {/* {this.props.points.map((point, index) => (
           <Circle
-            key={index}
-            x={point.x}
-            y={point.y}
-            fillColor={this.props.fillColor}
-            width={relativeW(this.props.width, this.props.gameMap)}
+          key={index}
+          x={point.x}
+          y={point.y}
+          fillColor={this.props.fillColor}
+          width={relativeW(this.props.width, this.props.gameMap)}
           />
         ))} */}
+        <Label
+          x={relativeX(this.props.x, this.props.gameMap)}
+          y={relativeY(this.props.y, this.props.gameMap) + 20}
+        >
+          <Tag
+            fill={this.props.fillColor}
+            lineJoin="round"
+            shadowColor="black"
+          />
+          <Text
+            text={this.props.username}
+            fontFamily="Calibri"
+            fontSize={18}
+            padding={5}
+            fill="white"
+          />
+        </Label>
       </React.Fragment>
     );
   }

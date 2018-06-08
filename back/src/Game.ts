@@ -18,6 +18,7 @@ const gameUpdate = schemapack.build({
       length: 'uint16',
       scale: 'float32',
       fillColor: 'string',
+      username: 'string',
       points: [
         {
           x: 'int16',
@@ -134,6 +135,7 @@ export class Game {
 
       ws.on('register', (username: string) => {
         currentPlayer = new Snake({
+          username,
           id: shortid.generate(),
           size: 30,
           length: 280,

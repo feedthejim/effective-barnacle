@@ -9,6 +9,7 @@ interface SnakeOptions extends GameEntityOptions {
   id: string;
   length?: number;
   angle?: number;
+  username: string;
   fillColor?: string;
   strokeColor?: string;
 }
@@ -36,7 +37,7 @@ export default class Snake extends GameEntity {
   // save snake's movement
   public movementQueue: Movement[] = [];
   public oldFillColor: string = undefined;
-
+  public username: string;
   // max length of queue
   public movementQueueLen: number;
   public speed: number = SPEED;
@@ -60,6 +61,7 @@ export default class Snake extends GameEntity {
     this.oldFillColor = this.fillColor;
     this.toAngle = this.angle = (options.angle || 0) + BASE_ANGLE;
     this.length = options.length;
+    this.username = options.username;
     this.updateSize();
     this.velocity();
   }

@@ -25,6 +25,7 @@ const gameUpdate = sp.build({
       length: 'uint16',
       scale: 'float32',
       fillColor: 'string',
+      username: 'string',
       points: [
         {
           x: 'int16',
@@ -51,6 +52,7 @@ function socketListener(ws, username) {
 
     // ws.on('connect', () => {
     //   console.log('Connected!');
+    console.log(username);
     ws.emit('register', username);
     // actions.connectToServer(url, username);
     // });
@@ -112,7 +114,7 @@ function* webSocketSaga() {
       upgrade: false,
     });
 
-    const socketChannel = yield call(socketListener, ws, payload.name);
+    const socketChannel = yield call(socketListener, ws, payload.username);
 
     const { cancel } = yield race({
       task: [call(externalListener, socketChannel), call(internalListener, ws)],

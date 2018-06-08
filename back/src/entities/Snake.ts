@@ -31,8 +31,11 @@ export default class Snake extends GameEntity {
   public id: string;
   public scale: number = INITIAL_SCALE;
 
+  public frameCounter: number = 0;
+
   // save snake's movement
   public movementQueue: Movement[] = [];
+  public oldFillColor: string = undefined;
 
   // max length of queue
   public movementQueueLen: number;
@@ -43,6 +46,7 @@ export default class Snake extends GameEntity {
   private turnSpeed: number = 0.15;
   private vx: number = 0;
   private vy: number = 0;
+
   public points: {
     x: number;
     y: number;
@@ -53,6 +57,7 @@ export default class Snake extends GameEntity {
     this.id = options.id;
     const strokeColor: string = options.strokeColor || '#000';
     this.fillColor = randomcolor();
+    this.oldFillColor = this.fillColor;
     this.toAngle = this.angle = (options.angle || 0) + BASE_ANGLE;
     this.length = options.length;
     this.updateSize();
@@ -157,16 +162,33 @@ export default class Snake extends GameEntity {
   public eat(food: Food): number {
     this.score += food.value;
 
+    this.frameCounter = 10;
+
     // add points
     const added = food.value / 200;
     this.updateSize(added);
     return added;
   }
 
+  public blink(): void {
+    if (this.fillColor !== 'white') {
+      this.fillColor = 'white';
+    } else {
+      this.fillColor = this.oldFillColor;
+    }
+  }
+
   // snake action
   public action() {
     if (this.stopped) {
       return;
+    }
+
+    if (this.frameCounter > 0) {
+      this.blink();
+      this.frameCounter -= 1;
+    } else {
+      this.fillColor = this.oldFillColor;
     }
 
     if (this.isSpeedUp) {

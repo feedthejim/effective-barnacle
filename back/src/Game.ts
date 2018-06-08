@@ -203,6 +203,21 @@ export class Game {
           snake.scale = newScale;
         }
       });
+
+      const diff = INITIAL_FOOD_COUNT / 2 - this.foods.length;
+
+      for (let i = 0; i < diff; i += 1) {
+        this.foods.push(
+          new Food({
+            id: shortid.generate(),
+            x: ~~(Math.random() * (MAP_WIDTH - 100) + 100 / 2),
+            y: ~~(Math.random() * (MAP_HEIGHT - 100) + 100 / 2),
+            size: 10,
+            value: INITIAL_FOOD_VALUE,
+          }),
+        );
+      }
+
       this.limit(snake);
     });
 

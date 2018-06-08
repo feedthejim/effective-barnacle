@@ -173,6 +173,11 @@ export class Game {
     this.snakes.forEach((snake: Snake) => {
       snake.update();
 
+      if (snake.length < 0) {
+        snakeDeleted.set(snake.id, snake);
+        return;
+      }
+
       this.snakes.forEach((snake2: Snake) => {
         snake2.points.forEach((point: { x: number; y: number }) => {
           if (

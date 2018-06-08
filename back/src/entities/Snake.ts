@@ -19,7 +19,7 @@ export class Movement {
     public y: number,
     public speed: number,
     public angle: number,
-  ) { }
+  ) {}
 }
 
 export default class Snake extends GameEntity {
@@ -167,6 +167,11 @@ export default class Snake extends GameEntity {
   public action() {
     if (this.stopped) {
       return;
+    }
+
+    if (this.isSpeedUp) {
+      this.length -= 2;
+      this.movementQueueLen -= 2;
     }
 
     // save movement

@@ -161,7 +161,10 @@ export class Game {
       });
 
       ws.on('disconnect', () => {
-        this.snakes.splice(this.snakes.indexOf(currentPlayer), 1);
+        this.snakes.splice(
+          this.snakes.findIndex(snake => snake.id === currentPlayer.id),
+          1,
+        );
         currentPlayer = undefined;
         this.disconnect();
       });

@@ -19,7 +19,7 @@ export class Movement {
     public y: number,
     public speed: number,
     public angle: number,
-  ) {}
+  ) { }
 }
 
 export default class Snake extends GameEntity {
@@ -40,7 +40,7 @@ export default class Snake extends GameEntity {
   public oldSpeed: number = SPEED;
   public length: number;
   public toAngle: number;
-  private turnSpeed: number = 0.06;
+  private turnSpeed: number = 0.15;
   private vx: number = 0;
   private vy: number = 0;
   public points: {

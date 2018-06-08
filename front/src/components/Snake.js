@@ -61,13 +61,17 @@ class Snake extends React.PureComponent {
           />
         ))} */}
         <Label
-          x={relativeX(this.props.x, this.props.gameMap)}
-          y={relativeY(this.props.y, this.props.gameMap) + 20}
+          x={
+            relativeX(this.props.x, this.props.gameMap) -
+            (this.props.username.length / 2) * 9
+          }
+          y={relativeY(this.props.y, this.props.gameMap) + 30}
         >
           <Tag
             fill={this.props.fillColor}
             lineJoin="round"
             shadowColor="black"
+            opacity={0.3}
           />
           <Text
             text={this.props.username}

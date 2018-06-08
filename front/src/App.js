@@ -3,6 +3,7 @@ import Canvas from './components/Canvas';
 import { connect } from 'react-redux';
 import Countdown from 'react-countdown-now';
 import { WEBSOCKET_CONNECT, WEBSOCKET_CANCEL } from './actions/websocket';
+import rug from 'random-username-generator';
 
 const mapStateToProps = state => {
   return {
@@ -29,7 +30,7 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      value: '',
+      value: rug.generate(),
     };
   }
 

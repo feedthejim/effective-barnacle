@@ -8,7 +8,7 @@ services:
     networks:
       - web
     ports:
-      - "80:80"
+      - "${EB_TRAEFIK_PORT}:80"
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -29,14 +29,26 @@ services:
     ports:
       - "9000:9000"
     labels:
-      - "traefik.frontend.rule=Host:orchestrator.localhost"
+      - "traefik.frontend.rule=Host:orchestrator.${EB_DOMAIN_NAME}"
     environment:
-      - EB_MONGO_HOST=mongodb
+      - EB_DOMAIN_NAME=${EB_DOMAIN_NAME}
+      - EB_ORCHESTRATOR_PORT=${EB_ORCHESTRATOR_PORT}
+      - EB_ORCHESTRATOR_SECRET=${EB_ORCHESTRATOR_SECRET}
+      - EB_SERVER_DOCKER_IMAGE=${EB_SERVER_DOCKER_IMAGE}
+      - EB_MAX_CLIENTS_PER_SERVER=${EB_MAX_CLIENTS_PER_SERVER}
+      - EB_DEFAULT_SERVERS_NB=${EB_DEFAULT_SERVERS_NB}
+      - EB_MONGO_HOST=${EB_MONGO_HOST}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - reverse-proxy
       - mongodb
+
+  backend:
+    build: ./back
+
+  frontend:
+    build: ./front
 
 networks:
   web:

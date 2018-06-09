@@ -6,4 +6,4 @@ fi
 
 docker-compose build
 
-docker-compose up -d
+docker-compose up -d reverse-proxy mongodb orchestrator

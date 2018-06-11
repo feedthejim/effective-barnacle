@@ -5,6 +5,7 @@ import {
   WEBSOCKET_CONNECT,
   WEBSOCKET_REGISTER_SUCCESS,
 } from '../actions/websocket';
+import { INSPECT_MAX_BYTES } from 'buffer';
 
 const initialState = {
   gameOver: false,
@@ -24,6 +25,7 @@ const initialState = {
   },
   players: [],
   foods: [],
+  leaderboard: [],
   player: {
     username: 'undefined',
     points: [],
@@ -73,6 +75,8 @@ export default (state = initialState, action) => {
         }
         : {};
 
+      state.leaderboard.sli;
+
       return {
         ...state,
         gameOver: !player,
@@ -84,6 +88,9 @@ export default (state = initialState, action) => {
             ...newConf,
           },
         },
+        leaderboard: action.players
+          .sort((p1, p2) => p1.points.length < p2.points.length)
+          .slice(0, 5),
         foods: [...action.foods],
         players: [...action.players],
         player: {

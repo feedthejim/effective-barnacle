@@ -90,7 +90,7 @@ class GameMap extends React.PureComponent {
             />
             <Text
               text={`${index + 1}: ${player.username} - ${
-                player.points.length
+                player.score
               }`}
               fontFamily="Arial"
               fontSize={18}

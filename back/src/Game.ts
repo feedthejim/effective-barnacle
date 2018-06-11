@@ -28,6 +28,7 @@ const gameUpdate = schemapack.build({
           y: 'int16',
         },
       ],
+      score: 'uint16',
       width: 'float32',
     },
   ],
@@ -269,6 +270,7 @@ export class Game {
         snakes: this.snakes.map((snake: Snake) => {
           return {
             ...snake,
+            score: snake.points.length,
             points: simplify(snake.points, 5),
           };
         }),

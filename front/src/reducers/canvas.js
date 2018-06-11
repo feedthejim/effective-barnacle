@@ -88,7 +88,7 @@ export default (state = initialState, action) => {
           },
         },
         leaderboard: action.players
-          .sort((p1, p2) => p1.points.length < p2.points.length)
+          .sort((p1, p2) => p1.score < p2.score)
           .slice(0, 10),
         foods: [...action.foods],
         players: [...action.players],

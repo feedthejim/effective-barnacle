@@ -35,6 +35,7 @@ const gameUpdate = sp.build({
         },
       ],
       width: 'float32',
+      score: 'uint16',
     },
   ],
   foods: [

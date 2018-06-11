@@ -31,12 +31,12 @@ export default class Snake extends GameEntity {
   public stopped: boolean = false;
   public id: string;
   public scale: number = INITIAL_SCALE;
+  public isBlinking: boolean = false;
 
   public frameCounter: number = 0;
 
   // save snake's movement
   public movementQueue: Movement[] = [];
-  public oldFillColor: string = undefined;
   public username: string;
   // max length of queue
   public movementQueueLen: number;
@@ -58,7 +58,6 @@ export default class Snake extends GameEntity {
     this.id = options.id;
     const strokeColor: string = options.strokeColor || '#000';
     this.fillColor = randomcolor();
-    this.oldFillColor = this.fillColor;
     this.toAngle = this.angle = (options.angle || 0) + BASE_ANGLE;
     this.length = options.length;
     this.username = options.username;
@@ -173,11 +172,7 @@ export default class Snake extends GameEntity {
   }
 
   public blink(): void {
-    if (this.fillColor !== 'white') {
-      this.fillColor = 'white';
-    } else {
-      this.fillColor = this.oldFillColor;
-    }
+    this.isBlinking = !this.isBlinking;
   }
 
   // snake action
@@ -190,7 +185,7 @@ export default class Snake extends GameEntity {
       this.blink();
       this.frameCounter -= 1;
     } else {
-      this.fillColor = this.oldFillColor;
+      this.isBlinking = false;
     }
 
     if (this.isSpeedUp) {

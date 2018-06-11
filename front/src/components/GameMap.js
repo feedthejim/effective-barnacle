@@ -53,7 +53,7 @@ const isVisible = (gameEntity, gameMap) => {
 };
 
 const Food = foodProps => (
-  <Circle {...foodProps} fill={'red'} stroke={'black'} listening={false} />
+  <Circle {...foodProps} fill={'yellow'} stroke={'white'} listening={false} />
 );
 
 class GameMap extends React.PureComponent {

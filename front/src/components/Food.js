@@ -69,13 +69,13 @@ class Food extends React.PureComponent {
       <Circle
         {...foodConfig}
         ref={this.circle}
-        fill={'red'}
-        stroke={'black'}
+        fill={'yellow'}
+        stroke={'white'}
         listening={false}
         // transformsEnabled="position"
         // strokeWidth={4}
         //   points={points}
-        //   stroke={this.props.color || 'black'}
+        //   stroke={this.prosps.color || 'black'}
         //   tension={0.3}
         //   strokeWidth={relativeW(this.props.width, this.props.gameMap)}
       />

@@ -21,6 +21,7 @@ const gameUpdate = sp.build({
       id: 'string',
       x: 'int16',
       y: 'int16',
+      isBlinking: 'bool',
       isSpeedUp: 'bool',
       length: 'uint16',
       scale: 'float32',

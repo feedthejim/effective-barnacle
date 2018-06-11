@@ -18,23 +18,6 @@ class LinearGradientBackground extends React.Component {
     this.state = {};
   }
   render() {
-    // const gameMap = this.props.gameMap;
-    // const view = gameMap.view;
-
-    // const borderBeginX = -view.x;
-    // const borderBeginY = -view.y;
-    // const borderWidth = game;
-    // const borderHeight =
-
-    // const endX = beginX + gameMap.paintWidth;
-
-    // const endY = beginY + gameMap.paintHeight;
-
-    // const cx = endX - beginX;
-    // const cy = endY - beginY;
-    // const w = cx;
-    // const h = cy;
-
     return (
       <React.Fragment>
         <Rect

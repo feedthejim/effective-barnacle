@@ -269,7 +269,7 @@ export class Game {
         snakes: this.snakes.map((snake: Snake) => {
           return {
             ...snake,
-            points: simplify(snake.points, 5, true),
+            points: simplify(snake.points, 5),
           };
         }),
         foods: this.foods,

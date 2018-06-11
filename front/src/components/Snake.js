@@ -36,7 +36,6 @@ class Snake extends React.PureComponent {
         relativeY(y, this.props.gameMap)
       );
     });
-    console.log(points.length);
     return (
       <React.Fragment>
         <Line

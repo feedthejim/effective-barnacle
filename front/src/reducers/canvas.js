@@ -10,11 +10,11 @@ const initialState = {
   gameOver: false,
   isGameRunning: false,
   gameMap: {
-    width: 1500,
-    height: 1500,
+    width: 3000,
+    height: 3000,
     scale: 1,
-    paintWidth: 1500 / 1,
-    paintHeight: 1500 / 1,
+    paintWidth: 3000 / 1,
+    paintHeight: 3000 / 1,
     view: {
       x: 0,
       y: 0,
@@ -68,8 +68,8 @@ export default (state = initialState, action) => {
       const newScale = player
         ? {
           scale: player.scale,
-          paintWidth: 1500 / player.scale,
-          paintHeight: 1500 / player.scale,
+          paintWidth: 3000 / player.scale,
+          paintHeight: 3000 / player.scale,
         }
         : {};
 

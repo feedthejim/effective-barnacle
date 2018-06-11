@@ -7,6 +7,7 @@ import GameEntity from './entities/GameEntity';
 import * as shortid from 'shortid';
 
 const schemapack = require('schemapack');
+const simplify = require('simplify-js');
 
 const gameUpdate = schemapack.build({
   snakes: [
@@ -162,13 +163,15 @@ export class Game {
       });
 
       ws.on('disconnect', () => {
-        const idx = this.snakes.findIndex(
-          snake => snake.id === currentPlayer.id,
-        );
-        if (idx !== -1) {
-          // handle the ctrl+R refresh case
-          this.snakes.splice(idx, 1);
-          currentPlayer = undefined;
+        if (currentPlayer) {
+          const idx = this.snakes.findIndex(
+            snake => snake.id === currentPlayer.id,
+          );
+          if (idx !== -1) {
+            // handle the ctrl+R refresh case
+            this.snakes.splice(idx, 1);
+            currentPlayer = undefined;
+          }
         }
         this.disconnect();
       });
@@ -254,13 +257,19 @@ export class Game {
     this.wss.emit(
       'game-update',
       gameUpdate.encode({
+        // snakes: this.snakes.map((snake: Snake) => {
+        //   return {
+        //     ...snake,
+        //     points:
+        //       snake.points.length < 20
+        //         ? snake.points
+        //         : snake.points.filter((point, index) => index % 10 === 0),
+        //   };
+        // }),
         snakes: this.snakes.map((snake: Snake) => {
           return {
             ...snake,
-            points:
-              snake.points.length < 20
-                ? snake.points
-                : snake.points.filter((point, index) => index % 10 === 0),
+            points: simplify(snake.points, 5, true),
           };
         }),
         foods: this.foods,

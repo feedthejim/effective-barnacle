@@ -1,9 +1,9 @@
 import React from 'react';
 import { Stage, Layer } from 'react-konva';
 import GameMap from './GameMap';
-import Background from './Background';
+// import Background from './Background';
 import { connect } from 'react-redux';
-// import LinearBackground from './LinearBackground';
+import LinearBackground from './LinearBackground';
 
 const mapStateToProps = state => {
   return {
@@ -25,7 +25,7 @@ class Canvas extends React.PureComponent {
           listening={false}
         >
           <Layer>
-            <Background />
+            <LinearBackground />
             <GameMap />
           </Layer>
         </Stage>

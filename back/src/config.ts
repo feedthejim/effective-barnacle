@@ -1,6 +1,6 @@
 export default {
-  MAP_WIDTH: 1500,
-  MAP_HEIGHT: 1500,
+  MAP_WIDTH: 5000,
+  MAP_HEIGHT: 5000,
 
   SOCKET_PORT: process.env.EB_SERVER_PORT || 4242,
   SPEED: 5,

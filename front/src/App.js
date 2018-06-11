@@ -45,7 +45,7 @@ class App extends React.Component {
   click() {
     console.log('mdr');
     this.props.disconnect();
-    this.props.connect(this.state.value);
+    this.props.connect(this.state.value.substring(0, 40));
   }
 
   render() {

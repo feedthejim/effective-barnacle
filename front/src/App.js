@@ -74,6 +74,7 @@ class App extends React.Component {
               placeholder="Nickname"
               value={this.state.value}
               onChange={event => this.handleChange(event)}
+              autoFocus
             />
 
             <button

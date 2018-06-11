@@ -143,9 +143,6 @@ export class Game {
           x: ~~(Math.random() * (MAP_WIDTH - 100) + 100 / 2),
           y: ~~(Math.random() * (MAP_HEIGHT - 100) + 100 / 2),
         });
-        // for (let i = 0; i < 1000; i++) {
-        //   snakes.push(new Snake())
-        // }
         this.snakes.push(currentPlayer);
         ws.emit('register-success', currentPlayer);
       });
@@ -163,12 +160,13 @@ export class Game {
       });
 
       ws.on('disconnect', () => {
-        this.snakes.splice(
-          this.snakes.findIndex(snake => snake.id === currentPlayer.id),
-          1,
-        );
-        currentPlayer = undefined;
-        this.disconnect();
+        const idx = this.snakes.findIndex(snake => snake.id === currentPlayer.id);
+        if (idx !== -1) {
+          // handle the ctrl+R refresh case
+          this.snakes.splice(idx, 1);
+          currentPlayer = undefined;
+          this.disconnect();
+        }
       });
     });
   }

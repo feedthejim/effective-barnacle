@@ -43,8 +43,8 @@ class Snake extends React.PureComponent {
           points={points}
           stroke={this.props.fillColor}
           //tension={0.3}
-          shadowColor="white"
-          shadowEnabled={this.props.isSpeedUp}
+          shadowColor={this.props.isSpeedUp ? 'white' : 'black'}
+          shadowEnabled={true}
           listening={false}
           lineCap="round"
           lineJoin="round"

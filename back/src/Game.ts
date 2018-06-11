@@ -169,8 +169,8 @@ export class Game {
           // handle the ctrl+R refresh case
           this.snakes.splice(idx, 1);
           currentPlayer = undefined;
-          this.disconnect();
         }
+        this.disconnect();
       });
     });
   }

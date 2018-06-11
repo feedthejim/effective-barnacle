@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker ps -q --filter ancestor="eb-back" | xargs -r docker kill
+docker ps -q --filter ancestor="effective-barnacle_backend" | xargs -r docker kill

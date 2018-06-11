@@ -22,7 +22,7 @@ function getUnusedPort(servers: IServer[]): number {
 
 export default async function spawnServer(servers: IServer[]): Promise<IServer> {
   const _id = shortid.generate();
-  const url = `eb-arena-${_id}.${DOMAIN_NAME}`;
+  const url = `arena-${_id}.${DOMAIN_NAME}`;
   const port = await getUnusedPort(servers);
 
   docker.run(SERVER_IMAGE, ['yarn', 'start'], null, {

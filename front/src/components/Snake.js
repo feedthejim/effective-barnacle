@@ -30,13 +30,14 @@ class Snake extends React.PureComponent {
   }
   render() {
     const points = [];
-    this.props.points.forEach(({ x, y }) => {
-      points.push(
-        relativeX(x, this.props.gameMap),
-        relativeY(y, this.props.gameMap)
-      );
+    this.props.points.forEach(({ x, y }, index) => {
+      if (index % 5 === 0) {
+        points.push(
+          relativeX(x, this.props.gameMap),
+          relativeY(y, this.props.gameMap)
+        );
+      }
     });
-
     return (
       <React.Fragment>
         <Line
@@ -75,7 +76,7 @@ class Snake extends React.PureComponent {
           />
           <Text
             text={this.props.username}
-            fontFamily="Calibri"
+            fontFamily="Arial"
             fontSize={18}
             padding={5}
             fill="white"

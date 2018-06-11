@@ -34,18 +34,13 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    // this.props.connect('Jimmy');
-  }
-
   handleChange(event) {
     this.setState({ value: event.target.value });
   }
 
   click() {
-    console.log('mdr');
     this.props.disconnect();
-    this.props.connect(this.state.value.substring(0, 40));
+    this.props.connect(this.state.value.substring(0, 40) || rug.generate());
   }
 
   render() {
@@ -65,17 +60,35 @@ class App extends React.Component {
       <div
         onKeyPress={event => {
           if (event.key === 'Enter') {
-            console.log('llol');
             this.click();
           }
         }}
+        className="panels-wrapper"
       >
-        <input
-          type="text"
-          value={this.state.value}
-          onChange={event => this.handleChange(event)}
-        />
-        <button onClick={() => this.click()}>Connect</button>
+        <div className="panels">
+          <div className="panel">
+            <p>Enter your nickname & play !</p>
+
+            <input
+              type="text"
+              placeholder="Nickname"
+              value={this.state.value}
+              onChange={event => this.handleChange(event)}
+              autoFocus
+            />
+
+            <button
+              className="panel-button"
+              onClick={() => this.click()}
+            >
+                Play
+            </button>
+          </div>
+        </div>
+        <p id="footer">© 2018
+          <a href="http://github.com/feedthejim" rel="noopener noreferrer" target="_blank"> Jimmy Lai</a> &
+          <a href="http://github.com/utay" rel="noopener noreferrer" target="_blank"> Yannick Utard</a>
+        </p>
       </div>
     );
   }

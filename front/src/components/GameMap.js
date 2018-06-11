@@ -61,23 +61,6 @@ class GameMap extends React.PureComponent {
   render() {
     return (
       <React.Fragment>
-        {this.props.leaderboard.map((player, index) => (
-          <Label key={player.id} x={10} y={10 + index * 30}>
-            <Tag
-              fill={'white'}
-              lineJoin="round"
-              shadowColor="black"
-              opacity={0.2}
-            />
-            <Text
-              text={`${index + 1}: ${player.username} - ${player.points.length}`}
-              fontFamily="Arial"
-              fontSize={18}
-              padding={5}
-              fill="white"
-            />
-          </Label>
-        ))}
         {this.props.foods.map(
           food =>
             isVisible(food, this.props.gameMap) &&
@@ -97,6 +80,25 @@ class GameMap extends React.PureComponent {
               <Snake key={index} {...player} />
             ) : null
         )}
+        {this.props.leaderboard.map((player, index) => (
+          <Label key={player.id} x={10} y={10 + index * 30}>
+            <Tag
+              fill={'white'}
+              lineJoin="round"
+              shadowColor="black"
+              opacity={0.2}
+            />
+            <Text
+              text={`${index + 1}: ${player.username} - ${
+                player.points.length
+              }`}
+              fontFamily="Arial"
+              fontSize={18}
+              padding={5}
+              fill="white"
+            />
+          </Label>
+        ))}
       </React.Fragment>
     );
   }

@@ -30,13 +30,11 @@ class Snake extends React.PureComponent {
   }
   render() {
     const points = [];
-    this.props.points.forEach(({ x, y }, index) => {
-      if (index % 5 === 0) {
-        points.push(
-          relativeX(x, this.props.gameMap),
-          relativeY(y, this.props.gameMap)
-        );
-      }
+    this.props.points.forEach(({ x, y }) => {
+      points.push(
+        relativeX(x, this.props.gameMap),
+        relativeY(y, this.props.gameMap)
+      );
     });
     return (
       <React.Fragment>

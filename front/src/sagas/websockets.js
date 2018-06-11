@@ -26,6 +26,7 @@ const gameUpdate = sp.build({
       length: 'uint16',
       scale: 'float32',
       fillColor: 'string',
+      angle: 'float32',
       username: 'string',
       points: [
         {

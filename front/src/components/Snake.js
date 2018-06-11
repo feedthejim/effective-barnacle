@@ -1,5 +1,5 @@
 import React from 'react';
-import { Line, Label, Tag, Text } from 'react-konva';
+import { Line, Label, Tag, Text, Circle, Group } from 'react-konva';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -44,7 +44,7 @@ class Snake extends React.PureComponent {
           points={points}
           stroke={this.props.fillColor}
           //tension={0.3}
-          shadowColor={this.props.isSpeedUp ? 'white' : 'black'}
+          shadowColor={this.props.isSpeedUp ? 'black' : 'white'}
           shadowEnabled={true}
           listening={false}
           lineCap="round"
@@ -52,15 +52,44 @@ class Snake extends React.PureComponent {
           tension={0.3}
           strokeWidth={relativeW(this.props.width, this.props.gameMap)}
         />
-        {/* {this.props.points.map((point, index) => (
+        <Group offset={this.props.angle}>
           <Circle
-          key={index}
-          x={point.x}
-          y={point.y}
-          fillColor={this.props.fillColor}
-          width={relativeW(this.props.width, this.props.gameMap)}
+            x={
+              relativeX(this.props.x, this.props.gameMap) -
+              this.props.scale * 10
+            }
+            y={relativeY(this.props.y, this.props.gameMap)}
+            width={relativeW(this.props.width, this.props.gameMap) * 0.5}
+            fill={this.props.isSpeedUp ? 'red' : 'white'}
           />
-        ))} */}
+          <Circle
+            x={
+              relativeX(this.props.x, this.props.gameMap) +
+              this.props.scale * 10
+            }
+            y={relativeY(this.props.y, this.props.gameMap)}
+            width={relativeW(this.props.width, this.props.gameMap) * 0.5}
+            fill={this.props.isSpeedUp ? 'red' : 'white'}
+          />
+          <Circle
+            width={relativeW(this.props.width, this.props.gameMap) * 0.1}
+            x={
+              relativeX(this.props.x, this.props.gameMap) -
+              this.props.scale * 10
+            }
+            y={relativeY(this.props.y, this.props.gameMap)}
+            fill="black"
+          />
+          <Circle
+            x={
+              relativeX(this.props.x, this.props.gameMap) +
+              this.props.scale * 10
+            }
+            y={relativeY(this.props.y, this.props.gameMap)}
+            width={relativeW(this.props.width, this.props.gameMap) * 0.1}
+            fill="black"
+          />
+        </Group>
         <Label
           x={
             relativeX(this.props.x, this.props.gameMap) -

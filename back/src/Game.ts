@@ -20,6 +20,7 @@ const gameUpdate = schemapack.build({
       scale: 'float32',
       fillColor: 'string',
       username: 'string',
+      angle: 'float32',
       points: [
         {
           x: 'int16',

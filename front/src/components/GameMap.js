@@ -53,6 +53,22 @@ const isVisible = (gameEntity, gameMap) => {
   );
 };
 
+const snakeIsVisible = (snake, gameMap) => {
+  return snake.points.some(point => {
+    const paintX = relativeX(point.x, gameMap);
+    const paintY = relativeY(point.y, gameMap);
+    const halfWidth = relativeW(snake.width, gameMap) / 2;
+    const halfHeight = relativeH(snake.width, gameMap) / 2;
+
+    return (
+      paintX + halfWidth > 0 &&
+      paintX - halfWidth < gameMap.view.width &&
+      paintY + halfHeight > 0 &&
+      paintY - halfHeight < gameMap.view.height
+    );
+  });
+};
+
 const Food = foodProps => (
   <Circle {...foodProps} fill={'yellow'} stroke={'white'} listening={false} />
 );
@@ -76,9 +92,10 @@ class GameMap extends React.PureComponent {
         )}
         {this.props.players.map(
           (player, index) =>
-            player.id !== this.props.player.id ? (
+            player.id !== this.props.player.id &&
+            snakeIsVisible(player, this.props.gameMap) && (
               <Snake key={index} {...player} />
-            ) : null
+            )
         )}
         {this.props.leaderboard.map((player, index) => (
           <Label key={player.id} x={10} y={10 + index * 30}>
@@ -89,9 +106,7 @@ class GameMap extends React.PureComponent {
               opacity={0.2}
             />
             <Text
-              text={`${index + 1}: ${player.username} - ${
-                player.score
-              }`}
+              text={`${index + 1}: ${player.username} - ${player.score}`}
               fontFamily="Arial"
               fontSize={18}
               padding={5}

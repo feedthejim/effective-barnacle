@@ -5,7 +5,6 @@ import {
   WEBSOCKET_CONNECT,
   WEBSOCKET_REGISTER_SUCCESS,
 } from '../actions/websocket';
-import { INSPECT_MAX_BYTES } from 'buffer';
 
 const initialState = {
   gameOver: false,
@@ -90,7 +89,7 @@ export default (state = initialState, action) => {
         },
         leaderboard: action.players
           .sort((p1, p2) => p1.points.length < p2.points.length)
-          .slice(0, 5),
+          .slice(0, 10),
         foods: [...action.foods],
         players: [...action.players],
         player: {

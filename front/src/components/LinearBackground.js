@@ -31,7 +31,7 @@ class LinearGradientBackground extends React.Component {
             x: this.props.gameMap.view.width + this.props.gameMap.view.x,
             y: this.props.gameMap.view.height + this.props.gameMap.view.y,
           }}
-          fillLinearGradientColorStops={[0, 'red', 1, 'yellow']}
+          fillLinearGradientColorStops={[0, 'red', 1, 'orange']}
         />
         <Rect
           x={-this.props.gameMap.view.x}

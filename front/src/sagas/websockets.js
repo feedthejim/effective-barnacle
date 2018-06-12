@@ -34,6 +34,13 @@ const gameUpdate = sp.build({
           y: 'int16',
         },
       ],
+
+      collisionRect: {
+        minX: 'int16',
+        minY: 'int16',
+        maxX: 'int16',
+        maxY: 'int16',
+      },
       width: 'float32',
       score: 'uint16',
     },

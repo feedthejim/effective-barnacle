@@ -28,6 +28,12 @@ const gameUpdate = schemapack.build({
           y: 'int16',
         },
       ],
+      collisionRect: {
+        minX: 'int16',
+        minY: 'int16',
+        maxX: 'int16',
+        maxY: 'int16',
+      },
       score: 'uint16',
       width: 'float32',
     },
@@ -81,6 +87,17 @@ const collision = (
 
   return isRect ? true : Math.hypot(disX, disY) < dw / 2;
 };
+
+const rectCollision = (
+  { collisionRect: rect1 }: Snake,
+  { collisionRect: rect2 }: Snake,
+) =>
+  !(
+    rect2.minX > rect1.maxX ||
+    rect2.maxX < rect1.minX ||
+    rect2.maxY < rect1.minY ||
+    rect2.minY > rect1.maxY
+  );
 
 // Map class
 export class Game {
@@ -191,16 +208,17 @@ export class Game {
       }
 
       if (
-        this.snakes.some((snake2: Snake) =>
-          snake2.points.some(
-            point =>
-              snake2.id !== snake.id &&
+        this.snakes.some(
+          (snake2: Snake) =>
+            snake2.id !== snake.id &&
+            rectCollision(snake, snake2) &&
+            snake2.points.some(point =>
               collision(snake, {
                 ...point,
                 width: snake2.width,
                 height: snake2.height,
               }),
-          ),
+            ),
         ) &&
         !snakeDeleted.has(snake.id)
       ) {
@@ -271,7 +289,8 @@ export class Game {
           return {
             ...snake,
             score: snake.points.length,
-            points: simplify(snake.points, 5),
+            points: snake.simplifiedPoints,
+            //    points: simplify(snake.points, 5),
           };
         }),
         foods: this.foods,

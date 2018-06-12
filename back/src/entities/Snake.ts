@@ -2,6 +2,7 @@ import GameEntity, { GameEntityOptions } from './GameEntity';
 import Food from './Food';
 import config from '../config';
 import randomcolor = require('randomcolor');
+const simplify = require('simplify-js');
 
 const { SPEED, BASE_ANGLE, INITIAL_SCALE } = config;
 
@@ -32,6 +33,12 @@ export default class Snake extends GameEntity {
   public id: string;
   public scale: number = INITIAL_SCALE;
   public isBlinking: boolean = false;
+  public collisionRect: {
+    minX: number;
+    minY: number;
+    maxX: number;
+    maxY: number;
+  };
 
   public frameCounter: number = 0;
 
@@ -53,6 +60,11 @@ export default class Snake extends GameEntity {
     y: number;
   }[] = [];
 
+  public simplifiedPoints: {
+    x: number;
+    y: number;
+  }[] = [];
+
   constructor(options?: SnakeOptions) {
     super(options);
     this.id = options.id;
@@ -60,6 +72,12 @@ export default class Snake extends GameEntity {
     this.fillColor = randomcolor();
     this.toAngle = this.angle = (options.angle || 0) + BASE_ANGLE;
     this.length = options.length;
+    this.collisionRect = {
+      minX: 30000,
+      maxX: -30000,
+      minY: 30000,
+      maxY: -30000,
+    };
     this.username = options.username;
     this.updateSize();
     this.velocity();
@@ -176,6 +194,40 @@ export default class Snake extends GameEntity {
     this.isBlinking = !this.isBlinking;
   }
 
+  public updateCollisionRect(): void {
+    this.simplifiedPoints = simplify(this.points, 5);
+
+    this.collisionRect = {
+      minX: 3000,
+      maxX: -3000,
+      minY: 3000,
+      maxY: -3000,
+    };
+
+    this.simplifiedPoints.forEach((point: any) => {
+      if (point.x < this.collisionRect.minX) {
+        this.collisionRect.minX = point.x;
+      }
+      if (point.x > this.collisionRect.maxX) {
+        this.collisionRect.maxX = point.x;
+      }
+      if (point.y < this.collisionRect.minY) {
+        this.collisionRect.minY = point.y;
+      }
+      if (point.y > this.collisionRect.maxY) {
+        this.collisionRect.maxY = point.y;
+      }
+    });
+
+    this.collisionRect.minX -= this.width;
+
+    this.collisionRect.minY -= this.width;
+
+    this.collisionRect.maxX += this.width;
+
+    this.collisionRect.maxY += this.width;
+  }
+
   // snake action
   public action() {
     if (this.stopped) {
@@ -230,5 +282,6 @@ export default class Snake extends GameEntity {
         this.points.push({ x, y });
       }
     }
+    this.updateCollisionRect();
   }
 }

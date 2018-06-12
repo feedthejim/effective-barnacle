@@ -53,21 +53,16 @@ const isVisible = (gameEntity, gameMap) => {
   );
 };
 
-const snakeIsVisible = (snake, gameMap) => {
-  return snake.points.some(point => {
-    const paintX = relativeX(point.x, gameMap);
-    const paintY = relativeY(point.y, gameMap);
-    const halfWidth = relativeW(snake.width, gameMap) / 2;
-    const halfHeight = relativeH(snake.width, gameMap) / 2;
-
-    return (
-      paintX + halfWidth > 0 &&
-      paintX - halfWidth < gameMap.view.width &&
-      paintY + halfHeight > 0 &&
-      paintY - halfHeight < gameMap.view.height
-    );
-  });
-};
+const snakeIsVisible = ({ collisionRect }, gameMap) =>
+  isVisible(
+    {
+      x: collisionRect.minX,
+      y: collisionRect.minY,
+      width: collisionRect.maxX - collisionRect.minX,
+      height:collisionRect.maxY - collisionRect.minY,
+    },
+    gameMap
+  );
 
 const Food = foodProps => (
   <Circle {...foodProps} fill={'yellow'} stroke={'white'} listening={false} />

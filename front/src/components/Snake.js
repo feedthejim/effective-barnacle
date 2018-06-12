@@ -1,5 +1,5 @@
 import React from 'react';
-import { Line, Label, Tag, Text, Circle, Group } from 'react-konva';
+import { Line, Label, Tag, Text, Circle, Group, Rect } from 'react-konva';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -36,6 +36,7 @@ class Snake extends React.PureComponent {
         relativeY(y, this.props.gameMap)
       );
     });
+
     return (
       <React.Fragment>
         <Line
@@ -109,6 +110,20 @@ class Snake extends React.PureComponent {
             fill="white"
           />
         </Label>
+        <Rect
+          strokeWidth={5}
+          stroke="white"
+          x={relativeX(this.props.collisionRect.minX, this.props.gameMap)}
+          y={relativeY(this.props.collisionRect.minY, this.props.gameMap)}
+          width={relativeW(
+            this.props.collisionRect.maxX - this.props.collisionRect.minX,
+            this.props.gameMap
+          )}
+          height={relativeH(
+            this.props.collisionRect.maxY - this.props.collisionRect.minY,
+            this.props.gameMap
+          )}
+        />
       </React.Fragment>
     );
   }

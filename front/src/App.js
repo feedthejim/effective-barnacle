@@ -1,5 +1,6 @@
 import React from 'react';
 import Canvas from './components/Canvas';
+import Home from './components/Home';
 import { connect } from 'react-redux';
 import Countdown from 'react-countdown-now';
 import { WEBSOCKET_CONNECT, WEBSOCKET_CANCEL } from './actions/websocket';
@@ -46,13 +47,18 @@ class App extends React.Component {
   render() {
     return this.props.isGameRunning ? (
       this.props.gameOver ? (
-        <div>
-          Game over! Respawn in ...
+        <Home>
+          <h2>Game over!</h2>
+          <p className="panel-respawn">Respawn in</p>
           <Countdown
             onComplete={() => this.click()}
             date={Date.now() + 5000}
-          />,
-        </div>
+            zeroPadLength={1}
+            renderer={({ seconds }) => {
+              return <h1 className="panel-coutdown">{seconds}</h1>;
+            }}
+          />
+        </Home>
       ) : (
         <Canvas />
       )
@@ -65,30 +71,24 @@ class App extends React.Component {
         }}
         className="panels-wrapper"
       >
-        <div className="panels">
-          <div className="panel">
-            <p>Enter your nickname & play !</p>
+        <Home>
+          <p>Enter your nickname & play !</p>
 
-            <input
-              type="text"
-              placeholder="Nickname"
-              value={this.state.value}
-              onChange={event => this.handleChange(event)}
-              autoFocus
-            />
+          <input
+            type="text"
+            placeholder="Nickname"
+            value={this.state.value}
+            onChange={event => this.handleChange(event)}
+            autoFocus
+          />
 
-            <button
-              className="panel-button"
-              onClick={() => this.click()}
-            >
-                Play
-            </button>
-          </div>
-        </div>
-        <p id="footer">© 2018
-          <a href="http://github.com/feedthejim" rel="noopener noreferrer" target="_blank"> Jimmy Lai</a> &
-          <a href="http://github.com/utay" rel="noopener noreferrer" target="_blank"> Yannick Utard</a>
-        </p>
+          <button
+            className="panel-button"
+            onClick={() => this.click()}
+          >
+              Play
+          </button>
+        </Home>
       </div>
     );
   }

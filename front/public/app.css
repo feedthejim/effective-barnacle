@@ -84,3 +84,11 @@ body {
   border-radius: 4px;
   margin: 0 auto;
 }
+
+.panel-respawn {
+  margin: 15px 0;
+}
+
+.panel-coutdown {
+  font-size: 60px;
+}

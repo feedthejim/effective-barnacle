@@ -41,15 +41,13 @@ const relativeH = (height, gameMap) => {
 const isVisible = (gameEntity, gameMap) => {
   const paintX = relativeX(gameEntity.x, gameMap);
   const paintY = relativeY(gameEntity.y, gameMap);
-  const halfWidth = relativeW(gameEntity.width, gameMap) / 2;
-  const halfHeight = relativeH(gameEntity.height, gameMap) / 2;
-
-  // console.log(gameEntity, paintX, paintY, halfWidth, halfHeight);
-  return (
-    paintX + halfWidth > 0 &&
-    paintX - halfWidth < gameMap.view.width &&
-    paintY + halfHeight > 0 &&
-    paintY - halfHeight < gameMap.view.height
+  const width = relativeW(gameEntity.width, gameMap);
+  const height = relativeH(gameEntity.height, gameMap);
+  return !(
+    paintX > gameMap.view.width ||
+    paintX + width < 0 ||
+    paintY > gameMap.view.height ||
+    paintY + height < 0
   );
 };
 
@@ -59,7 +57,7 @@ const snakeIsVisible = ({ collisionRect }, gameMap) =>
       x: collisionRect.minX,
       y: collisionRect.minY,
       width: collisionRect.maxX - collisionRect.minX,
-      height:collisionRect.maxY - collisionRect.minY,
+      height: collisionRect.maxY - collisionRect.minY,
     },
     gameMap
   );

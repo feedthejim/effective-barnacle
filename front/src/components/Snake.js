@@ -110,7 +110,7 @@ class Snake extends React.PureComponent {
             fill="white"
           />
         </Label>
-        <Rect
+        {/* <Rect
           strokeWidth={5}
           stroke="white"
           x={relativeX(this.props.collisionRect.minX, this.props.gameMap)}
@@ -123,7 +123,7 @@ class Snake extends React.PureComponent {
             this.props.collisionRect.maxY - this.props.collisionRect.minY,
             this.props.gameMap
           )}
-        />
+        /> */}
       </React.Fragment>
     );
   }

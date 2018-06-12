@@ -190,22 +190,39 @@ export class Game {
         return;
       }
 
-      this.snakes.forEach((snake2: Snake) => {
-        snake2.points.forEach((point: { x: number; y: number }) => {
-          if (
-            snake2.id !== snake.id &&
-            collision(snake, {
-              ...point,
-              width: snake2.width,
-              height: snake2.height,
-            })
-          ) {
-            if (!snakeDeleted.has(snake.id)) {
-              snakeDeleted.set(snake.id, snake);
-            }
-          }
-        });
-      });
+      if (
+        this.snakes.some((snake2: Snake) =>
+          snake2.points.some(
+            point =>
+              snake2.id !== snake.id &&
+              collision(snake, {
+                ...point,
+                width: snake2.width,
+                height: snake2.height,
+              }),
+          ),
+        ) &&
+        !snakeDeleted.has(snake.id)
+      ) {
+        snakeDeleted.set(snake.id, snake);
+      }
+
+      // .forEach((snake2: Snake) => {
+      //   snake2.points.forEach((point: { x: number; y: number }) => {
+      //     if (
+      //       snake2.id !== snake.id &&
+      //       collision(snake, {
+      //         ...point,
+      //         width: snake2.width,
+      //         height: snake2.height,
+      //       })
+      //     ) {
+      //       if (!snakeDeleted.has(snake.id)) {
+      //         snakeDeleted.set(snake.id, snake);
+      //       }
+      //     }
+      //   });
+      // });
 
       this.foods.forEach((food: Food) => {
         food.update();

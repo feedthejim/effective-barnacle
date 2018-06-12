@@ -207,23 +207,6 @@ export class Game {
         snakeDeleted.set(snake.id, snake);
       }
 
-      // .forEach((snake2: Snake) => {
-      //   snake2.points.forEach((point: { x: number; y: number }) => {
-      //     if (
-      //       snake2.id !== snake.id &&
-      //       collision(snake, {
-      //         ...point,
-      //         width: snake2.width,
-      //         height: snake2.height,
-      //       })
-      //     ) {
-      //       if (!snakeDeleted.has(snake.id)) {
-      //         snakeDeleted.set(snake.id, snake);
-      //       }
-      //     }
-      //   });
-      // });
-
       this.foods.forEach((food: Food) => {
         food.update();
         if (!collision(snake, food)) {

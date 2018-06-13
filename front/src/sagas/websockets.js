@@ -29,10 +29,9 @@ function socketListener(ws, username) {
       const fileReader = new FileReader();
       fileReader.onload = event => {
         const msg = msgpack.decode(new Uint8Array(event.target.result));
-        console.log(msg);
         switch (msg.topic) {
           case 'register-success':
-            actions.registerSuccess(msg.Player);
+            actions.registerSuccess(msg.player);
             break;
           case 'game-update':
             actions.updateGameState(msg);

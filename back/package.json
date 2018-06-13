@@ -18,7 +18,8 @@
     "simplify-js": "^1.2.3",
     "socket.io": "^2.1.1",
     "ts-node": "^6.0.4",
-    "typescript": "^2.8.3"
+    "typescript": "^2.8.3",
+    "webworker-threads": "^0.7.15"
   },
   "devDependencies": {
     "@types/socket.io": "^1.4.33",

@@ -26,7 +26,6 @@ function socketListener(ws, username) {
     ws.onopen = () => send(ws, 'register', { Username: username });
 
     ws.onmessage = event => {
-      console.log('event', event);
       const fileReader = new FileReader();
       fileReader.onload = event => {
         const msg = msgpack.decode(new Uint8Array(event.target.result));
@@ -55,7 +54,7 @@ function* externalListener(socketChannel) {
 
 function* internalListener(ws) {
   yield [
-    takeEvery(PLAYER_MOVE, action => send(ws, 'move', { action })),
+    takeEvery(PLAYER_MOVE, action => send(ws, 'move', action)),
     takeEvery(PLAYER_SPEED_UP, () => send(ws, 'player-speed-up')),
     takeEvery(PLAYER_SPEED_DOWN, () => send(ws, 'player-speed-down')),
   ];

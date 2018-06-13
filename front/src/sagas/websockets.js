@@ -6,88 +6,42 @@ import {
   webSocketActions,
 } from '../actions/websocket';
 import { call, put, take, race, takeEvery } from 'redux-saga/effects';
-import io from 'socket.io-client';
 import {
   PLAYER_MOVE,
   PLAYER_SPEED_UP,
   PLAYER_SPEED_DOWN,
 } from '../actions/mousemove';
-import sp from 'schemapack';
 import axios from 'axios';
+import msgpack from 'msgpack-lite';
 
-const gameUpdate = sp.build({
-  snakes: [
-    {
-      id: 'string',
-      x: 'int16',
-      y: 'int16',
-      isBlinking: 'bool',
-      isSpeedUp: 'bool',
-      length: 'uint16',
-      scale: 'float32',
-      fillColor: 'string',
-      angle: 'float32',
-      username: 'string',
-      points: [
-        {
-          x: 'int16',
-          y: 'int16',
-        },
-      ],
-
-      collisionRect: {
-        minX: 'int16',
-        minY: 'int16',
-        maxX: 'int16',
-        maxY: 'int16',
-      },
-      width: 'float32',
-      score: 'uint16',
-    },
-  ],
-  foods: [
-    {
-      x: 'int16',
-      y: 'int16',
-      id: 'string',
-      width: 'float32',
-      height: 'float32',
-    },
-  ],
-});
+function send(ws, topic, payload = {}) {
+  ws.send(msgpack.encode({ Topic: topic, ...payload }));
+}
 
 function socketListener(ws, username) {
   return eventChannel(emitter => {
     const actions = bindActionCreators(webSocketActions, emitter);
 
-    // ws.on('connect', () => {
-    //   console.log('Connected!');
     console.log(username);
-    ws.emit('register', username);
-    // actions.connectToServer(url, username);
-    // });
+    ws.onopen = () => send(ws, 'register', { Username: username });
 
-    ws.on('register-success', actions.registerSuccess);
-
-    ws.on('game-update', data =>
-      actions.updateGameState(gameUpdate.decode(data))
-    );
-    // ws.on('message', (e) => {
-    //   // console.log(e);
-    //   ws.emit('message', 'fdp');
-    // });
-    // /* eslint-disable-next-line */
-
-    // ws.onopen = e => {
-    //   //ws.send(JSON.stringify({ type: 'move', ...subscribeData }));
-    // };
-
-    // ws.onclose = eventHandlers.onclose;
-
-    // ws.onerror = eventHandlers.onerror;
-
-    // ws.onmessage = eventHandlers.onmessage;
-    // return ws.close;
+    ws.onmessage = event => {
+      console.log('event', event);
+      const fileReader = new FileReader();
+      fileReader.onload = event => {
+        const msg = msgpack.decode(new Uint8Array(event.target.result));
+        console.log(msg);
+        switch (msg.topic) {
+          case 'register-success':
+            actions.registerSuccess(msg.Player);
+            break;
+          case 'game-update':
+            actions.updateGameState(msg);
+            break;
+        }
+      };
+      fileReader.readAsArrayBuffer(event.data);
+    };
     return ws.close;
   });
 }
@@ -101,11 +55,9 @@ function* externalListener(socketChannel) {
 
 function* internalListener(ws) {
   yield [
-    takeEvery(PLAYER_MOVE, action => ws.emit('move', action)),
-    takeEvery(PLAYER_SPEED_UP, () => {
-      ws.emit('player-speed-up');
-    }),
-    takeEvery(PLAYER_SPEED_DOWN, () => ws.emit('player-speed-down')),
+    takeEvery(PLAYER_MOVE, action => send(ws, 'move', { action })),
+    takeEvery(PLAYER_SPEED_UP, () => send(ws, 'player-speed-up')),
+    takeEvery(PLAYER_SPEED_DOWN, () => send(ws, 'player-speed-down')),
   ];
 }
 
@@ -119,10 +71,7 @@ function* webSocketSaga() {
     } catch (e) {
       data = 'localhost:4242';
     }
-    const ws = io(`ws://${data}`, {
-      transports: ['websocket'],
-      upgrade: false,
-    });
+    const ws = new WebSocket(`ws://${data}`);
 
     const socketChannel = yield call(socketListener, ws, payload.username);
 

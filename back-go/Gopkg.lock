@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  name = "github.com/golang/protobuf"
-  packages = ["proto"]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
-
-[[projects]]
   name = "github.com/gorilla/websocket"
   packages = ["."]
   revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
@@ -19,40 +13,9 @@
   revision = "6c56cef5189ca1b3d5ef01dc07f4d611dfc0bb33"
   version = "v1.0"
 
-[[projects]]
-  name = "github.com/vmihailenco/msgpack"
-  packages = [
-    ".",
-    "codes"
-  ]
-  revision = "b5e691b1eb52a28c05e67ab9df303626c095c23b"
-  version = "v3.3.3"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/net"
-  packages = ["context"]
-  revision = "db08ff08e8622530d9ed3a0e8ac279f6d4c02196"
-
-[[projects]]
-  name = "google.golang.org/appengine"
-  packages = [
-    ".",
-    "datastore",
-    "internal",
-    "internal/app_identity",
-    "internal/base",
-    "internal/datastore",
-    "internal/log",
-    "internal/modules",
-    "internal/remote_api"
-  ]
-  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
-  version = "v1.0.0"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a7a1bd8f430ed0aaefa894b124a7e85515096a6e0605425637c407829be2ebe0"
+  inputs-digest = "9434d2f72c0d1e8318c24f8cb07a1fa1f3d8310e0995a3e7adf5de47ca230ef8"
   solver-name = "gps-cdcl"
   solver-version = 1

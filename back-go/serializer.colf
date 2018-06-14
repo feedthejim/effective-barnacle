@@ -1,0 +1,52 @@
+package serializer
+
+type Point struct {
+    x float64
+    y float64
+}
+
+type Rect struct {
+    minX float64
+    minY float64
+    maxX float64
+    maxY float64
+}
+
+type SnakeMsg struct {
+    id text
+    x float64
+    y float64
+    isBlinking bool
+    isSpeedUp bool
+    length float64
+    scale float64
+    fillColor text
+    username text
+    angle float64
+    points []Point
+    collisionRect Rect
+    score int64
+    width float64
+    speed float64
+}
+
+type FoodMsg struct {
+    id text
+    x float64
+    y float64
+    width float64
+    height float64
+}
+
+type GameUpdateMsg struct {
+    topic text
+    snakes []SnakeMsg
+    foods []FoodMsg
+}
+
+type IncMsg struct {
+    topic text
+    x float64
+    y float64
+    username text
+}

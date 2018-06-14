@@ -8,22 +8,10 @@ import (
 	"github.com/teris-io/shortid"
 )
 
-type Point struct {
-	X float64 `msgpack:"x"`
-	Y float64 `msgpack:"y"`
-}
-
 type Movement struct {
 	Point
 	Speed float64
 	Angle float64
-}
-
-type Rect struct {
-	MinX float64 `msgpack:"minX"`
-	MinY float64 `msgpack:"minY"`
-	MaxX float64 `msgpack:"maxX"`
-	MaxY float64 `msgpack:"maxY"`
 }
 
 type GameEntity struct {
@@ -36,7 +24,7 @@ type GameEntity struct {
 type Snake struct {
 	GameEntity
 	Id               string  `msgpack:"id"`
-	Score            int     `msgpack:"score"`
+	Score            int64   `msgpack:"score"`
 	IsSpeedUp        bool    `msgpack:"isSpeedUp"`
 	FillColor        string  `msgpack:"fillColor"`
 	Angle            float64 `msgpack:"angle"`
@@ -200,7 +188,7 @@ func (s *Snake) SpeedDown() {
 }
 
 func (s *Snake) Eat(f *Food) float64 {
-	s.Score += int(f.Value)
+	s.Score += int64(f.Value)
 
 	s.FrameCounter = 10
 

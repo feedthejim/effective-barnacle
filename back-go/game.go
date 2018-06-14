@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/vmihailenco/msgpack"
 )
 
 type Client struct {
@@ -23,39 +22,6 @@ type Game struct {
 	Height  float64
 	Clients []*Client
 	Jobs    chan *Client
-}
-
-type Player struct {
-	GameEntity
-	Id            string   `msgpack:"id"`
-	IsSpeedUp     bool     `msgpack:"isSpeedUp"`
-	FillColor     string   `msgpack:"fillColor"`
-	Angle         float64  `msgpack:"angle"`
-	Scale         float64  `msgpack:"scale"`
-	IsBlinking    bool     `msgpack:"isBlinking"`
-	CollisionRect *Rect    `msgpack:"collisionRect"`
-	Username      string   `msgpack:"username"`
-	Speed         float64  `msgpack:"speed"`
-	Length        float64  `msgpack:"length"`
-	Score         int      `msgpack:"score"`
-	Points        []*Point `msgpack:"points"`
-}
-
-type IncMessage struct {
-	Point
-	Topic    string
-	Username string
-}
-
-type MoveMessage struct {
-	Topic  string `msgpack:"topic"`
-	Player *Snake `msgpack:"player"`
-}
-
-type GameUpdateMessage struct {
-	Topic  string    `msgpack:"topic"`
-	Snakes []*Player `msgpack:"snakes"`
-	Foods  []*Food   `msgpack:"foods"`
 }
 
 func NewGame() *Game {
@@ -165,10 +131,10 @@ func (g *Game) Init() {
 				return
 			}
 
-			var incMsg IncMessage
-			err = msgpack.Unmarshal(p, &incMsg)
+			var incMsg IncMsg
+			_, err = incMsg.Unmarshal(p)
 			if err != nil {
-				log.Println("error while decoding msgpack", err)
+				log.Println("error while decoding", err)
 				return
 			}
 
@@ -180,15 +146,33 @@ func (g *Game) Init() {
 				}
 				g.Clients = append(g.Clients, currentPlayer)
 
-				msg, err := msgpack.Marshal(&MoveMessage{
-					Topic:  "register-success",
-					Player: currentPlayer.Snake,
-				})
-				if err != nil {
-					log.Println("error while encoding msgpack", err)
+				snake := currentPlayer.Snake
+				gameUpdateMsg := &GameUpdateMsg{
+					Topic: "register-success",
+					Foods: []*FoodMsg{},
+					Snakes: []*SnakeMsg{&SnakeMsg{
+						Id:            snake.Id,
+						X:             snake.X,
+						Y:             snake.Y,
+						Width:         snake.Width,
+						IsSpeedUp:     snake.IsSpeedUp,
+						FillColor:     snake.FillColor,
+						Angle:         snake.Angle,
+						Scale:         snake.Scale,
+						IsBlinking:    snake.IsBlinking,
+						CollisionRect: snake.CollisionRect,
+						Username:      snake.Username,
+						Speed:         snake.Speed,
+						Length:        snake.Length,
+						Score:         int64(len(snake.Points)),
+						Points:        snake.SimplifiedPoints,
+					}},
 				}
 
-				err = conn.WriteMessage(messageType, msg)
+				msg := make([]byte, 15000)
+				msgLen := gameUpdateMsg.MarshalTo(msg)
+
+				err = conn.WriteMessage(messageType, msg[:msgLen])
 				if err != nil {
 					log.Println("error while writing message", err)
 					return
@@ -281,15 +265,21 @@ func (g *Game) Worker() {
 func (g *Game) sendData(client Client) {
 	snake := client.Snake
 
-	gameUpdateMsg := &GameUpdateMessage{
+	gameUpdateMsg := &GameUpdateMsg{
 		Topic:  "game-update",
-		Foods:  []*Food{},
-		Snakes: []*Player{},
+		Foods:  []*FoodMsg{},
+		Snakes: []*SnakeMsg{},
 	}
 
 	for _, food := range g.Foods {
 		if rectCollision(snake.DisplayRect, food.CollisionRect) {
-			gameUpdateMsg.Foods = append(gameUpdateMsg.Foods, food)
+			gameUpdateMsg.Foods = append(gameUpdateMsg.Foods, &FoodMsg{
+				Id:     food.Id,
+				X:      food.X,
+				Y:      food.Y,
+				Width:  food.Width,
+				Height: food.Height,
+			})
 		}
 	}
 
@@ -300,9 +290,11 @@ func (g *Game) sendData(client Client) {
 			continue
 		}
 
-		gameUpdateMsg.Snakes = append(gameUpdateMsg.Snakes, &Player{
-			GameEntity:    other.GameEntity,
+		gameUpdateMsg.Snakes = append(gameUpdateMsg.Snakes, &SnakeMsg{
 			Id:            other.Id,
+			X:             other.X,
+			Y:             other.Y,
+			Width:         other.Width,
 			IsSpeedUp:     other.IsSpeedUp,
 			FillColor:     other.FillColor,
 			Angle:         other.Angle,
@@ -312,17 +304,15 @@ func (g *Game) sendData(client Client) {
 			Username:      other.Username,
 			Speed:         other.Speed,
 			Length:        other.Length,
-			Score:         len(other.Points),
+			Score:         int64(len(other.Points)),
 			Points:        other.SimplifiedPoints,
 		})
 	}
 
-	msg, err := msgpack.Marshal(gameUpdateMsg)
-	if err != nil {
-		panic(err)
-	}
+	msg := make([]byte, 15000)
+	msgLen := gameUpdateMsg.MarshalTo(msg)
 
-	err = client.Conn.WriteMessage(websocket.BinaryMessage, msg)
+	err := client.Conn.WriteMessage(websocket.BinaryMessage, msg[:msgLen])
 	if err != nil {
 		log.Println("error while sending message", err)
 		return

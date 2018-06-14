@@ -12,10 +12,10 @@ import {
   PLAYER_SPEED_DOWN,
 } from '../actions/mousemove';
 import axios from 'axios';
-import msgpack from 'msgpack-lite';
+import { serializer } from '../Colfer';
 
 function send(ws, topic, payload = {}) {
-  ws.send(msgpack.encode({ Topic: topic, ...payload }));
+  ws.send(new serializer.IncMsg({ topic, ...payload }).marshal());
 }
 
 function socketListener(ws, username) {
@@ -23,13 +23,14 @@ function socketListener(ws, username) {
     const actions = bindActionCreators(webSocketActions, emitter);
 
     console.log(username);
-    ws.onopen = () => send(ws, 'register', { Username: username });
+    ws.onopen = () => send(ws, 'register', { username });
 
     ws.onmessage = event => {
-      const msg = msgpack.decode(new Uint8Array(event.data));
+      const msg = new serializer.GameUpdateMsg();
+      msg.unmarshal(new Uint8Array(event.data));
       switch (msg.topic) {
         case 'register-success':
-          actions.registerSuccess(msg.player);
+          actions.registerSuccess(msg.snakes[0]);
           break;
         case 'game-update':
           actions.updateGameState(msg);

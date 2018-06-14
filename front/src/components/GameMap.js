@@ -84,10 +84,10 @@ class GameMap extends React.PureComponent {
           <Snake {...this.props.player} />
         )}
         {this.props.players.map(
-          (player, index) =>
+          player =>
             player.id !== this.props.player.id &&
             snakeIsVisible(player, this.props.gameMap) && (
-              <Snake key={index} {...player} />
+              <Snake key={player.id} {...player} />
             )
         )}
         {this.props.leaderboard.map((player, index) => (

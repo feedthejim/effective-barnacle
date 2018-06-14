@@ -196,7 +196,7 @@ export default class Snake extends GameEntity {
 
   public updateCollisionRect(): void {
     this.simplifiedPoints = simplify(this.points, 5);
-
+    // this.simplifiedPoints = this.points.slice(9, this.points.len);
     this.collisionRect = {
       minX: 3000,
       maxX: -3000,
@@ -264,7 +264,7 @@ export default class Snake extends GameEntity {
     let wholeLength = this.length;
     if (this.movementQueue.length) {
       let i = this.movementQueue.length - 1;
-      while (i) {
+      while (i > 0) {
         const movement = this.movementQueue[i];
         let x = movement.x;
         let y = movement.y;

@@ -16,23 +16,24 @@ type Movement struct {
 
 type GameEntity struct {
 	Point
-	Width         float64 `msgpack:"width"`
-	Height        float64 `msgpack:"height"`
-	CollisionRect *Rect   `msgpack:"collisionRect"`
+	Width         float64
+	Height        float64
+	CollisionRect *Rect
 }
 
 type Snake struct {
 	GameEntity
-	Id               string  `msgpack:"id"`
-	Score            int64   `msgpack:"score"`
-	IsSpeedUp        bool    `msgpack:"isSpeedUp"`
-	FillColor        string  `msgpack:"fillColor"`
-	Angle            float64 `msgpack:"angle"`
-	Scale            float64 `msgpack:"scale"`
-	IsBlinking       bool    `msgpack:"isBlinking"`
-	Username         string  `msgpack:"username"`
-	Speed            float64 `msgpack:"speed"`
-	Length           float64 `msgpack:"length"`
+	Id               string
+	RealId           string
+	Score            int64
+	IsSpeedUp        bool
+	FillColor        string
+	Angle            float64
+	Scale            float64
+	IsBlinking       bool
+	Username         string
+	Speed            float64
+	Length           float64
 	DisplayRect      *Rect
 	FrameCounter     int
 	MovementQueue    []*Movement
@@ -58,6 +59,7 @@ func getRandomColor() string {
 
 func NewSnake(username string) *Snake {
 	r := rand.Float64()
+	id := shortid.MustGenerate()
 	s := &Snake{
 		GameEntity: GameEntity{
 			Point: Point{
@@ -73,7 +75,8 @@ func NewSnake(username string) *Snake {
 				MaxY: -30000,
 			},
 		},
-		Id:               shortid.MustGenerate(),
+		Id:               id,
+		RealId:           id,
 		FillColor:        getRandomColor(),
 		Angle:            r*math.Pi*2 + BASE_ANGLE,
 		ToAngle:          r*math.Pi*2 + BASE_ANGLE,

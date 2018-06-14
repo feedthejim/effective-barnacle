@@ -114,16 +114,16 @@ func (g *Game) Init() {
 		confirmConnection()
 
 		var currentPlayer *Client
+		var id string
 
 		for {
 			messageType, p, err := conn.ReadMessage()
 			if err != nil {
 				log.Println("disconnect")
 				if currentPlayer != nil {
-					idx := FindSnakeIndex(g.Clients, currentPlayer.Snake.Id)
+					idx := FindSnakeIndex(g.Clients, id)
 					if idx != -1 {
 						g.Clients = append(g.Clients[:idx], g.Clients[idx+1:]...)
-						currentPlayer = nil
 					}
 				}
 				conn.Close()
@@ -147,6 +147,7 @@ func (g *Game) Init() {
 				g.Clients = append(g.Clients, currentPlayer)
 
 				snake := currentPlayer.Snake
+				id = snake.Id
 				gameUpdateMsg := &GameUpdateMsg{
 					Topic: "register-success",
 					Foods: []*FoodMsg{},
@@ -249,7 +250,7 @@ func FindFoodIndex(foods []*Food, id string) int {
 
 func FindSnakeIndex(clients []*Client, id string) int {
 	for i, client := range clients {
-		if id == client.Snake.Id {
+		if id == client.Snake.RealId {
 			return i
 		}
 	}
@@ -369,7 +370,12 @@ func (g *Game) Run() {
 
 	for _, snake := range deletedSnakes {
 		idx := FindSnakeIndex(g.Clients, snake.Id)
-		g.Clients = append(g.Clients[:idx], g.Clients[idx+1:]...)
+
+		if idx == -1 {
+			continue
+		}
+
+		g.Clients[idx].Snake.Id = "0"
 		for i, point := range snake.Points {
 			if i%10 == 0 {
 				g.Foods = append(g.Foods, NewFood(point.X, point.Y))

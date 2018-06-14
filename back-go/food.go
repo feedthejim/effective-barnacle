@@ -9,8 +9,8 @@ import (
 
 type Food struct {
 	GameEntity
-	Id             string  `msgpack:"id"`
-	Value          float64 `msgpack:"value"`
+	Id             string
+	Value          float64
 	LightSize      float64
 	LightDirection bool
 }

@@ -208,9 +208,14 @@ func (g *Game) Init() {
 		}
 	}()
 
-	log.Println("Serving at localhost:4242...")
+	port := os.Getenv("EB_SERVER_PORT")
+	if port == "" {
+		port = "4242"
+	}
 
-	http.ListenAndServe(":4242", nil)
+	log.Println("Serving at localhost:" + port)
+
+	http.ListenAndServe(":"+port, nil)
 }
 
 func (g *Game) limit(snake *Snake) {

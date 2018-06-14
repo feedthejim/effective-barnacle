@@ -26,19 +26,15 @@ function socketListener(ws, username) {
     ws.onopen = () => send(ws, 'register', { Username: username });
 
     ws.onmessage = event => {
-      const fileReader = new FileReader();
-      fileReader.onload = event => {
-        const msg = msgpack.decode(new Uint8Array(event.target.result));
-        switch (msg.topic) {
-          case 'register-success':
-            actions.registerSuccess(msg.player);
-            break;
-          case 'game-update':
-            actions.updateGameState(msg);
-            break;
-        }
-      };
-      fileReader.readAsArrayBuffer(event.data);
+      const msg = msgpack.decode(new Uint8Array(event.data));
+      switch (msg.topic) {
+        case 'register-success':
+          actions.registerSuccess(msg.player);
+          break;
+        case 'game-update':
+          actions.updateGameState(msg);
+          break;
+      }
     };
     return ws.close;
   });
@@ -70,6 +66,7 @@ function* webSocketSaga() {
       data = 'localhost:4242';
     }
     const ws = new WebSocket(`ws://${data}`);
+    ws.binaryType = 'arraybuffer';
 
     const socketChannel = yield call(socketListener, ws, payload.username);
 

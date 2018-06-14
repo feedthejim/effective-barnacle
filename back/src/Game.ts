@@ -149,7 +149,10 @@ export class Game {
   public init() {
     this.wss.listen(SOCKET_PORT);
     setInterval(() => this.run(), GAMELOOP_RATE);
-    setInterval(() => collisionWorker.postMessage(this.snakes), 1000);
+    setInterval(
+      () => collisionWorker.postMessage(this.snakes),
+      GAMELOOP_RATE * 5,
+    );
 
     this.wss.on('connection', (ws: Socket) => {
       this.confirmConnection();

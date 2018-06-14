@@ -24,6 +24,12 @@ func NewFood(x, y float64) *Food {
 			},
 			Width:  10,
 			Height: 10,
+			CollisionRect: &Rect{
+				MinX: x - 20,
+				MinY: y - 20,
+				MaxX: x + 20,
+				MaxY: y + 20,
+			},
 		},
 		Id:             shortid.MustGenerate(),
 		Value:          INITIAL_FOOD_VALUE,

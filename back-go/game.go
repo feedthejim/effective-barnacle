@@ -11,13 +11,18 @@ import (
 	"github.com/vmihailenco/msgpack"
 )
 
+type Client struct {
+	Snake *Snake
+	Conn  *websocket.Conn
+}
+
 type Game struct {
-	Snakes      []*Snake
-	Count       int
-	Foods       []*Food
-	Width       float64
-	Height      float64
-	Connections map[*websocket.Conn]bool
+	Count   int
+	Foods   []*Food
+	Width   float64
+	Height  float64
+	Clients []*Client
+	Jobs    chan *Client
 }
 
 type Player struct {
@@ -55,12 +60,12 @@ type GameUpdateMessage struct {
 
 func NewGame() *Game {
 	game := &Game{
-		Snakes:      []*Snake{},
-		Count:       0,
-		Foods:       []*Food{},
-		Width:       MAP_WIDTH,
-		Height:      MAP_HEIGHT,
-		Connections: map[*websocket.Conn]bool{},
+		Count:   0,
+		Foods:   []*Food{},
+		Width:   MAP_WIDTH,
+		Height:  MAP_HEIGHT,
+		Clients: []*Client{},
+		Jobs:    make(chan *Client),
 	}
 
 	for i := 0; i < INITIAL_FOOD_COUNT; i++ {
@@ -86,10 +91,7 @@ func collision(ent1, ent2 *GameEntity, isRect bool) bool {
 	return math.Hypot(disX, disY) < dw/2
 }
 
-func rectCollision(s1, s2 *Snake) bool {
-	rect1 := s1.CollisionRect
-	rect2 := s2.CollisionRect
-
+func rectCollision(rect1, rect2 *Rect) bool {
 	return !(rect2.MinX > rect1.MaxX ||
 		rect2.MaxX < rect1.MinX ||
 		rect2.MaxY < rect1.MinY ||
@@ -99,7 +101,11 @@ func rectCollision(s1, s2 *Snake) bool {
 func checkCollision(s1, s2 *Snake) bool {
 	for _, point := range s2.Points {
 		if collision(&s1.GameEntity,
-			&GameEntity{Point{point.X, point.Y}, s2.Width, s2.Height},
+			&GameEntity{
+				Point:  Point{point.X, point.Y},
+				Width:  s2.Width,
+				Height: s2.Height,
+			},
 			false) {
 			return true
 		}
@@ -139,24 +145,21 @@ func (g *Game) Init() {
 
 		log.Println("connect")
 
-		g.Connections[conn] = true
-
 		confirmConnection()
 
-		var currentPlayer *Snake
+		var currentPlayer *Client
 
 		for {
 			messageType, p, err := conn.ReadMessage()
 			if err != nil {
 				log.Println("disconnect")
 				if currentPlayer != nil {
-					idx := FindSnakeIndex(g.Snakes, currentPlayer.Id)
+					idx := FindSnakeIndex(g.Clients, currentPlayer.Snake.Id)
 					if idx != -1 {
-						g.Snakes = append(g.Snakes[:idx], g.Snakes[idx+1:]...)
+						g.Clients = append(g.Clients[:idx], g.Clients[idx+1:]...)
 						currentPlayer = nil
 					}
 				}
-				delete(g.Connections, conn)
 				conn.Close()
 				disconnect()
 				return
@@ -165,36 +168,39 @@ func (g *Game) Init() {
 			var incMsg IncMessage
 			err = msgpack.Unmarshal(p, &incMsg)
 			if err != nil {
-				log.Println("error while decoding msgpack")
+				log.Println("error while decoding msgpack", err)
 				return
 			}
 
 			switch incMsg.Topic {
 			case "register":
-				currentPlayer = NewSnake(incMsg.Username)
-				g.Snakes = append(g.Snakes, currentPlayer)
+				currentPlayer = &Client{
+					Snake: NewSnake(incMsg.Username),
+					Conn:  conn,
+				}
+				g.Clients = append(g.Clients, currentPlayer)
 
 				msg, err := msgpack.Marshal(&MoveMessage{
 					Topic:  "register-success",
-					Player: currentPlayer,
+					Player: currentPlayer.Snake,
 				})
 				if err != nil {
-					log.Println("error while encoding msgpack")
+					log.Println("error while encoding msgpack", err)
 				}
 
 				err = conn.WriteMessage(messageType, msg)
 				if err != nil {
-					log.Println("error while writing message")
+					log.Println("error while writing message", err)
 					return
 				}
 			case "move":
 				if currentPlayer != nil {
-					currentPlayer.MoveTo(incMsg.X, incMsg.Y)
+					currentPlayer.Snake.MoveTo(incMsg.X, incMsg.Y)
 				}
 			case "player-speed-up":
-				currentPlayer.SpeedUp()
+				currentPlayer.Snake.SpeedUp()
 			case "player-speed-down":
-				currentPlayer.SpeedDown()
+				currentPlayer.Snake.SpeedDown()
 			default:
 				log.Println("error while reading topic")
 			}
@@ -207,6 +213,10 @@ func (g *Game) Init() {
 			g.Run()
 		}
 	}()
+
+	for w := 0; w < 100; w++ {
+		go g.Worker()
+	}
 
 	port := os.Getenv("EB_SERVER_PORT")
 	if port == "" {
@@ -253,19 +263,78 @@ func FindFoodIndex(foods []*Food, id string) int {
 	return -1
 }
 
-func FindSnakeIndex(snakes []*Snake, id string) int {
-	for i, snake := range snakes {
-		if id == snake.Id {
+func FindSnakeIndex(clients []*Client, id string) int {
+	for i, client := range clients {
+		if id == client.Snake.Id {
 			return i
 		}
 	}
 	return -1
 }
 
+func (g *Game) Worker() {
+	for client := range g.Jobs {
+		g.sendData(*client)
+	}
+}
+
+func (g *Game) sendData(client Client) {
+	snake := client.Snake
+
+	gameUpdateMsg := &GameUpdateMessage{
+		Topic:  "game-update",
+		Foods:  []*Food{},
+		Snakes: []*Player{},
+	}
+
+	for _, food := range g.Foods {
+		if rectCollision(snake.DisplayRect, food.CollisionRect) {
+			gameUpdateMsg.Foods = append(gameUpdateMsg.Foods, food)
+		}
+	}
+
+	for _, client2 := range g.Clients {
+		other := client2.Snake
+
+		if snake.Id != other.Id && !rectCollision(snake.DisplayRect, other.CollisionRect) {
+			continue
+		}
+
+		gameUpdateMsg.Snakes = append(gameUpdateMsg.Snakes, &Player{
+			GameEntity:    other.GameEntity,
+			Id:            other.Id,
+			IsSpeedUp:     other.IsSpeedUp,
+			FillColor:     other.FillColor,
+			Angle:         other.Angle,
+			Scale:         other.Scale,
+			IsBlinking:    other.IsBlinking,
+			CollisionRect: other.CollisionRect,
+			Username:      other.Username,
+			Speed:         other.Speed,
+			Length:        other.Length,
+			Score:         len(other.Points),
+			Points:        other.SimplifiedPoints,
+		})
+	}
+
+	msg, err := msgpack.Marshal(gameUpdateMsg)
+	if err != nil {
+		panic(err)
+	}
+
+	err = client.Conn.WriteMessage(websocket.BinaryMessage, msg)
+	if err != nil {
+		log.Println("error while sending message", err)
+		return
+	}
+}
+
 func (g *Game) Run() {
 	deletedSnakes := map[string]*Snake{}
 
-	for _, snake := range g.Snakes {
+	for _, client := range g.Clients {
+		snake := client.Snake
+
 		snake.Action()
 
 		if snake.Length < 0 {
@@ -273,9 +342,10 @@ func (g *Game) Run() {
 			continue
 		}
 
-		for _, snake2 := range g.Snakes {
+		for _, client2 := range g.Clients {
+			snake2 := client2.Snake
 			if snake2.Id != snake.Id &&
-				rectCollision(snake, snake2) &&
+				rectCollision(snake.CollisionRect, snake2.CollisionRect) &&
 				checkCollision(snake, snake2) &&
 				deletedSnakes[snake.Id] == nil {
 				deletedSnakes[snake.Id] = snake
@@ -308,8 +378,8 @@ func (g *Game) Run() {
 	}
 
 	for _, snake := range deletedSnakes {
-		idx := FindSnakeIndex(g.Snakes, snake.Id)
-		g.Snakes = append(g.Snakes[:idx], g.Snakes[idx+1:]...)
+		idx := FindSnakeIndex(g.Clients, snake.Id)
+		g.Clients = append(g.Clients[:idx], g.Clients[idx+1:]...)
 		for i, point := range snake.Points {
 			if i%10 == 0 {
 				g.Foods = append(g.Foods, NewFood(point.X, point.Y))
@@ -317,38 +387,7 @@ func (g *Game) Run() {
 		}
 	}
 
-	gameUpdateMsg := &GameUpdateMessage{
-		Topic:  "game-update",
-		Foods:  g.Foods,
-		Snakes: []*Player{},
-	}
-	for _, snake := range g.Snakes {
-		gameUpdateMsg.Snakes = append(gameUpdateMsg.Snakes, &Player{
-			GameEntity:    snake.GameEntity,
-			Id:            snake.Id,
-			IsSpeedUp:     snake.IsSpeedUp,
-			FillColor:     snake.FillColor,
-			Angle:         snake.Angle,
-			Scale:         snake.Scale,
-			IsBlinking:    snake.IsBlinking,
-			CollisionRect: snake.CollisionRect,
-			Username:      snake.Username,
-			Speed:         snake.Speed,
-			Length:        snake.Length,
-			Score:         len(snake.Points),
-			Points:        snake.SimplifiedPoints,
-		})
-	}
-	msg, err := msgpack.Marshal(gameUpdateMsg)
-	if err != nil {
-		panic(err)
-	}
-
-	for conn, _ := range g.Connections {
-		err = conn.WriteMessage(websocket.BinaryMessage, msg)
-		if err != nil {
-			log.Println("error while broadcasting message")
-			return
-		}
+	for _, client := range g.Clients {
+		g.Jobs <- client
 	}
 }

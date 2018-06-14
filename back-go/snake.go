@@ -28,8 +28,9 @@ type Rect struct {
 
 type GameEntity struct {
 	Point
-	Width  float64 `msgpack:"width"`
-	Height float64 `msgpack:"height"`
+	Width         float64 `msgpack:"width"`
+	Height        float64 `msgpack:"height"`
+	CollisionRect *Rect   `msgpack:"collisionRect"`
 }
 
 type Snake struct {
@@ -41,10 +42,10 @@ type Snake struct {
 	Angle            float64 `msgpack:"angle"`
 	Scale            float64 `msgpack:"scale"`
 	IsBlinking       bool    `msgpack:"isBlinking"`
-	CollisionRect    *Rect   `msgpack:"collisionRect"`
 	Username         string  `msgpack:"username"`
 	Speed            float64 `msgpack:"speed"`
 	Length           float64 `msgpack:"length"`
+	DisplayRect      *Rect
 	FrameCounter     int
 	MovementQueue    []*Movement
 	OldSpeed         float64
@@ -77,23 +78,23 @@ func NewSnake(username string) *Snake {
 			},
 			Width:  30,
 			Height: 30,
+			CollisionRect: &Rect{
+				MinX: 30000,
+				MaxX: -30000,
+				MinY: 30000,
+				MaxY: -30000,
+			},
 		},
-		Id:        shortid.MustGenerate(),
-		FillColor: getRandomColor(),
-		Angle:     r*math.Pi*2 + BASE_ANGLE,
-		ToAngle:   r*math.Pi*2 + BASE_ANGLE,
-		Length:    280,
-		Username:  username,
-		Scale:     INITIAL_SCALE,
-		Speed:     SPEED,
-		OldSpeed:  SPEED,
-		TurnSpeed: 0.15,
-		CollisionRect: &Rect{
-			MinX: 30000,
-			MaxX: -30000,
-			MinY: 30000,
-			MaxY: -30000,
-		},
+		Id:               shortid.MustGenerate(),
+		FillColor:        getRandomColor(),
+		Angle:            r*math.Pi*2 + BASE_ANGLE,
+		ToAngle:          r*math.Pi*2 + BASE_ANGLE,
+		Length:           280,
+		Username:         username,
+		Scale:            INITIAL_SCALE,
+		Speed:            SPEED,
+		OldSpeed:         SPEED,
+		TurnSpeed:        0.15,
 		MovementQueueLen: math.Floor(280 / SPEED),
 	}
 	s.UpdateSize(0)
@@ -241,6 +242,13 @@ func (s *Snake) UpdateCollisionRect() {
 	s.CollisionRect.MinY -= s.Width
 	s.CollisionRect.MaxX += s.Width
 	s.CollisionRect.MaxY += s.Width
+
+	s.DisplayRect = &Rect{
+		s.CollisionRect.MinX - 950,
+		s.CollisionRect.MinY - 450,
+		s.CollisionRect.MaxX + 950,
+		s.CollisionRect.MaxY + 450,
+	}
 }
 
 func (s *Snake) Action() {
@@ -299,5 +307,6 @@ func (s *Snake) Action() {
 			s.Points = append(s.Points, &Point{x, y})
 		}
 	}
+
 	s.UpdateCollisionRect()
 }

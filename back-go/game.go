@@ -313,8 +313,9 @@ func (g *Game) Run() {
 	}
 
 	gameUpdateMsg := &GameUpdateMessage{
-		Topic: "game-update",
-		Foods: g.Foods,
+		Topic:  "game-update",
+		Foods:  g.Foods,
+		Snakes: []*Player{},
 	}
 	for _, snake := range g.Snakes {
 		gameUpdateMsg.Snakes = append(gameUpdateMsg.Snakes, &Player{

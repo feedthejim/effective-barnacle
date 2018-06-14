@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"math"
 	"math/rand"
 
@@ -57,6 +58,15 @@ type Snake struct {
 	Vy               float64
 }
 
+func getRandomColor() string {
+	letters := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'}
+	color := bytes.NewBufferString("#")
+	for i := 0; i < 6; i++ {
+		color.WriteByte(letters[rand.Intn(16)])
+	}
+	return color.String()
+}
+
 func NewSnake(username string) *Snake {
 	r := rand.Float64()
 	s := &Snake{
@@ -69,7 +79,7 @@ func NewSnake(username string) *Snake {
 			Height: 30,
 		},
 		Id:        shortid.MustGenerate(),
-		FillColor: "#000", // FIXME: generate random color
+		FillColor: getRandomColor(),
 		Angle:     r*math.Pi*2 + BASE_ANGLE,
 		ToAngle:   r*math.Pi*2 + BASE_ANGLE,
 		Length:    280,

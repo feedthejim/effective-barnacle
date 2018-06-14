@@ -21,9 +21,19 @@ type Game struct {
 }
 
 type Player struct {
-	Snake
-	Score  int      `msgpack:"score"`
-	Points []*Point `msgpack:"points"`
+	GameEntity
+	Id            string   `msgpack:"id"`
+	IsSpeedUp     bool     `msgpack:"isSpeedUp"`
+	FillColor     string   `msgpack:"fillColor"`
+	Angle         float64  `msgpack:"angle"`
+	Scale         float64  `msgpack:"scale"`
+	IsBlinking    bool     `msgpack:"isBlinking"`
+	CollisionRect *Rect    `msgpack:"collisionRect"`
+	Username      string   `msgpack:"username"`
+	Speed         float64  `msgpack:"speed"`
+	Length        float64  `msgpack:"length"`
+	Score         int      `msgpack:"score"`
+	Points        []*Point `msgpack:"points"`
 }
 
 type IncMessage struct {
@@ -255,7 +265,7 @@ func (g *Game) Run() {
 
 		if snake.Length < 0 {
 			deletedSnakes[snake.Id] = snake
-			return
+			continue
 		}
 
 		for _, snake2 := range g.Snakes {
@@ -308,9 +318,19 @@ func (g *Game) Run() {
 	}
 	for _, snake := range g.Snakes {
 		gameUpdateMsg.Snakes = append(gameUpdateMsg.Snakes, &Player{
-			Snake:  *snake,
-			Score:  len(snake.Points),
-			Points: snake.SimplifiedPoints,
+			GameEntity:    snake.GameEntity,
+			Id:            snake.Id,
+			IsSpeedUp:     snake.IsSpeedUp,
+			FillColor:     snake.FillColor,
+			Angle:         snake.Angle,
+			Scale:         snake.Scale,
+			IsBlinking:    snake.IsBlinking,
+			CollisionRect: snake.CollisionRect,
+			Username:      snake.Username,
+			Speed:         snake.Speed,
+			Length:        snake.Length,
+			Score:         len(snake.Points),
+			Points:        snake.SimplifiedPoints,
 		})
 	}
 	msg, err := msgpack.Marshal(gameUpdateMsg)

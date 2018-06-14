@@ -57,23 +57,21 @@ type Snake struct {
 	Vy               float64
 }
 
-var tPi = math.Pi * 2
-var twoPi = int(tPi)
-
 func NewSnake(username string) *Snake {
-	return &Snake{
+	r := rand.Float64()
+	s := &Snake{
 		GameEntity: GameEntity{
 			Point: Point{
-				X: math.Ceil(rand.Float64()*(MAP_WIDTH-100) + 100/2),
-				Y: math.Ceil(rand.Float64()*(MAP_HEIGHT-100) + 100/2),
+				X: math.Floor(rand.Float64()*(MAP_WIDTH-100) + 100/2),
+				Y: math.Floor(rand.Float64()*(MAP_HEIGHT-100) + 100/2),
 			},
 			Width:  30,
 			Height: 30,
 		},
 		Id:        shortid.MustGenerate(),
 		FillColor: "#000", // FIXME: generate random color
-		Angle:     rand.Float64()*float64(twoPi) + BASE_ANGLE,
-		ToAngle:   rand.Float64()*float64(twoPi) + BASE_ANGLE,
+		Angle:     r*math.Pi*2 + BASE_ANGLE,
+		ToAngle:   r*math.Pi*2 + BASE_ANGLE,
 		Length:    280,
 		Username:  username,
 		Scale:     INITIAL_SCALE,
@@ -86,8 +84,11 @@ func NewSnake(username string) *Snake {
 			MinY: 30000,
 			MaxY: -30000,
 		},
-		MovementQueueLen: math.Ceil(280 / SPEED),
+		MovementQueueLen: math.Floor(280 / SPEED),
 	}
+	s.UpdateSize(0)
+	s.Velocity()
+	return s
 }
 
 func (s *Snake) UpdateSize(added float64) {
@@ -96,7 +97,7 @@ func (s *Snake) UpdateSize(added float64) {
 	s.Length += added * 50
 	s.TurnSpeed -= added / 1000
 	s.TurnSpeed = math.Max(0.05, s.TurnSpeed)
-	s.MovementQueueLen = math.Ceil(float64(s.Length) / s.OldSpeed)
+	s.MovementQueueLen = math.Floor(float64(s.Length) / s.OldSpeed)
 }
 
 func (s *Snake) MoveTo(nx, ny float64) {
@@ -112,9 +113,9 @@ func (s *Snake) MoveTo(nx, ny float64) {
 		angle = math.Pi*2 - angle
 	}
 
-	oldAngle := math.Abs(float64(int(s.ToAngle) % twoPi))
+	oldAngle := math.Abs(math.Mod(s.ToAngle, (math.Pi * 2)))
 
-	rounds := math.Ceil(s.ToAngle / (math.Pi * 2))
+	rounds := math.Floor(s.ToAngle / (math.Pi * 2))
 
 	s.ToAngle = angle
 
@@ -128,7 +129,7 @@ func (s *Snake) MoveTo(nx, ny float64) {
 }
 
 func (s *Snake) Velocity() {
-	angle := float64(int(s.Angle) % twoPi)
+	angle := math.Mod(s.Angle, math.Pi*2)
 	vx := math.Abs(s.Speed * math.Sin(angle))
 	vy := math.Abs(s.Speed * math.Cos(angle))
 
@@ -161,7 +162,7 @@ func (s *Snake) TurnAround() {
 	angleDistance := s.ToAngle - s.Angle
 
 	if math.Abs(angleDistance) <= s.TurnSpeed {
-		s.Angle = BASE_ANGLE + float64(int(s.ToAngle)%twoPi)
+		s.Angle = BASE_ANGLE + math.Mod(s.ToAngle, math.Pi*2)
 		s.ToAngle = s.Angle
 	} else {
 		s.Angle += Sign(angleDistance) * s.TurnSpeed
@@ -188,11 +189,11 @@ func (s *Snake) SpeedDown() {
 }
 
 func (s *Snake) Eat(f *Food) float64 {
-	s.Score += f.Value
+	s.Score += int(f.Value)
 
 	s.FrameCounter = 10
 
-	added := float64(f.Value / 200)
+	added := f.Value / 200
 	s.UpdateSize(added)
 	return added
 }
@@ -271,8 +272,10 @@ func (s *Snake) Action() {
 			x := movement.X
 			y := movement.Y
 			if wholeLength > 0 && wholeLength < movement.Speed {
-				lm := s.MovementQueue[i+1]
-				if lm == nil {
+				var lm *Movement
+				if i < len(s.MovementQueue)-1 {
+					lm = s.MovementQueue[i+1]
+				} else {
 					lm = &Movement{Point{s.X, s.Y}, s.Width, s.Height}
 				}
 				ratio := wholeLength / movement.Speed

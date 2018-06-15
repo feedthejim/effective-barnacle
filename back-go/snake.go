@@ -24,7 +24,6 @@ type GameEntity struct {
 type Snake struct {
 	GameEntity
 	Id               string
-	RealId           string
 	Score            int64
 	IsSpeedUp        bool
 	FillColor        string
@@ -59,24 +58,25 @@ func getRandomColor() string {
 
 func NewSnake(username string) *Snake {
 	r := rand.Float64()
-	id := shortid.MustGenerate()
+
+	rect := &Rect{
+		MinX: 30000,
+		MaxX: -30000,
+		MinY: 30000,
+		MaxY: -30000,
+	}
+
 	s := &Snake{
 		GameEntity: GameEntity{
 			Point: Point{
 				X: math.Floor(rand.Float64()*(MAP_WIDTH-100) + 100/2),
 				Y: math.Floor(rand.Float64()*(MAP_HEIGHT-100) + 100/2),
 			},
-			Width:  30,
-			Height: 30,
-			CollisionRect: &Rect{
-				MinX: 30000,
-				MaxX: -30000,
-				MinY: 30000,
-				MaxY: -30000,
-			},
+			Width:         30,
+			Height:        30,
+			CollisionRect: rect,
 		},
-		Id:               id,
-		RealId:           id,
+		Id:               shortid.MustGenerate(),
 		FillColor:        getRandomColor(),
 		Angle:            r*math.Pi*2 + BASE_ANGLE,
 		ToAngle:          r*math.Pi*2 + BASE_ANGLE,
@@ -87,6 +87,7 @@ func NewSnake(username string) *Snake {
 		OldSpeed:         SPEED,
 		TurnSpeed:        0.15,
 		MovementQueueLen: math.Floor(280 / SPEED),
+		DisplayRect:      rect,
 	}
 	s.UpdateSize(0)
 	s.Velocity()

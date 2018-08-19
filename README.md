@@ -45,7 +45,7 @@ You can also customize ports and other variables with the following environment 
 * `EB_DOMAIN_NAME` (`localhost`)
 * `EB_ORCHESTRATOR_PORT` (`9000`)
 * `EB_ORCHESTRATOR_SECRET` (`supersecret`)
-* `EB_SERVER_DOCKER_IMAGE` (`effective-barnacle\_backend`)
+* `EB_SERVER_DOCKER_IMAGE` (`effective-barnacle_backend`)
 * `EB_MAX_CLIENTS_PER_SERVER` (`5`)
 * `EB_DEFAULT_SERVERS_NB` (`5`)
 * `EB_MONGO_HOST` (`mongodb`)

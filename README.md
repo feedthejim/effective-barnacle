@@ -2,7 +2,7 @@
 
 > A super scalable multiplayer game made with a ton of awesome technologies.
 
-Wanna know how does it work? Read our [blog post](medium.com)!
+Curious about how we built it and how does it work? Read our [blog post](medium.com)!
 
 Client:
 * React, Redux, [Sagas](https://github.com/redux-saga/redux-saga)

@@ -88,7 +88,7 @@ export default class Snake extends GameEntity {
     this.height = Math.min(this.height + added, MAX_SIZE);
     this.length += Math.min(added * 50, MAX_LEN);
     this.turnSpeed -= added / 1000;
-    this.turnSpeed = Math.max(0.05, this.turnSpeed);
+    this.turnSpeed = Math.max(0.08, this.turnSpeed);
     this.movementQueueLen = Math.ceil(this.length / this.oldSpeed);
   }
 

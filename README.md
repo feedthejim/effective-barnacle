@@ -1,29 +1,54 @@
 # Effective Barnacle
 
-A super scalable multiplayer game made with a ton of awesome technologies:
+> A super scalable multiplayer game made with a ton of awesome technologies.
+
+Wanna know how does it work? Read our [blog post](medium.com)!
+
+Client:
 * React, Redux, [Sagas](https://github.com/redux-saga/redux-saga)
 * HTML5 Canvas
 * WebSocket
+
+Server:
 * Node
 * Docker
 * [Traefik](https://traefik.io)
 
-*SCREENSHOTS*
+## Preview
+
+| ![Screenshot](screenshots/home.png) | ![Screenshot](screenshots/game.png)
+|:---:|:---:|
+| Home page | The game
 
 ## Run it
 
-One command to run them all (and you just need Docker!):
+You just need to run:
 
 `./scripts/deploy.sh`
 
-This will start create the `traefik_default` docker network if it doesn't exist yet and then run `docker-compose build`, `docker-compose up -d` wich will start:
-* the Effective Barnacle client (`localhost:3000`)
-* a Traefik reverse proxy (`localhost:80`)
-* a Mongodb instance (`localhost:27017`)
-* the Effective Barnacle orchestrator (`localhost:9000`)
-* 5 starting instances of the Effective Barnacle server on random unused ports
+This script will:
 
-You can also customize the docker-compose variables (ports, ...) within the `.env` file.
+* Create a `traefik_default` docker network if it doesn't exist yet
+* Run `docker-compose build` to build docker images
+* Run `docker-compose up -d` to start services
+
+Services are listed below:
+* 5 instances of the [Effective Barnacle server](https://github.com/feedthejim/effective-barnacle/tree/master/back) on random unused ports (`localhost:XXXX`)
+* [Effective Barnacle client](https://github.com/feedthejim/effective-barnacle/tree/master/front) (`localhost:3000`)
+* [Effective Barnacle orchestrator](https://github.com/feedthejim/effective-barnacle/tree/master/orchestrator) (`localhost:9000`)
+* Traefik reverse proxy (`localhost:80`)
+* MongoDB (`localhost:27017`)
+
+You can also customize ports and other variables with the following environment variables:
+
+* `EB_TRAEFIK_PORT` (`80`)
+* `EB_DOMAIN_NAME` (`localhost`)
+* `EB_ORCHESTRATOR_PORT` (`9000`)
+* `EB_ORCHESTRATOR_SECRET` (`supersecret`)
+* `EB_SERVER_DOCKER_IMAGE` (`effective-barnacle\_backend`)
+* `EB_MAX_CLIENTS_PER_SERVER` (`5`)
+* `EB_DEFAULT_SERVERS_NB` (`5`)
+* `EB_MONGO_HOST` (`mongodb`)
 
 ## Shut it down
 
@@ -31,37 +56,18 @@ Just run:
 
 `./scripts/stop.sh`
 
-## Why Effective Barnacle?
-
-School javascript project
-
-Inspired by slither.io
-
-Challenging:
-* perfomance with react konva, schemapack, websockets
-* autoscaling with traefik and docker
-
-We didn't have much inspiration for the name... So we let GitHub decided for us :D
-
-## How does it work?
-
-one orchestrator, X backends, everything lives within a docker container
-orchestrator creates new server instances when servers are full
-connect/confirm mechanism to avoid DDOS
+> To make sure that Effective Barnacle is shutting down with this command, your server Docker image should be named **effective-barnacle_backend**.
 
 ## Contributing
 
 Pull requests are very welcomed!
 
-To get started in your contribution, you just need to:
+To get started in your contribution, you just need to either use the `./scripts/deploy.sh` script or install/run services in dev:
 
-* either use the `./scripts/deploy.sh` script
-
-OR
-
-* install the back, front or orchestrator dependencies `yarn`
-* run the dev mode `yarn dev`
-* open `localhost:3000`
+```
+$ yarn install
+$ yarn dev
+```
 
 ## Authors
 

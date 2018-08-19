@@ -38,6 +38,7 @@ export default async function spawnServer(servers: IServer[]): Promise<IServer> 
       `EB_SERVER_PORT=${port}`,
       `EB_SERVER_SECRET=${SECRET}`,
       `EB_ORCHESTRATOR_URL=orchestrator.${DOMAIN_NAME}`,
+      'NODE_ENV=production',
     ],
     name: _id,
   });

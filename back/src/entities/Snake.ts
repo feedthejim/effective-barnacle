@@ -4,7 +4,7 @@ import config from '../config';
 import randomcolor = require('randomcolor');
 const simplify = require('simplify-js');
 
-const { SPEED, BASE_ANGLE, INITIAL_SCALE } = config;
+const { SPEED, BASE_ANGLE, INITIAL_SCALE, MAX_SIZE, MAX_LEN } = config;
 
 interface SnakeOptions extends GameEntityOptions {
   id: string;
@@ -84,9 +84,9 @@ export default class Snake extends GameEntity {
   }
 
   public updateSize(added: number = 0): void {
-    this.width += added;
-    this.height += added;
-    this.length += added * 50;
+    this.width = Math.min(this.width + added,  MAX_SIZE);
+    this.height = Math.min(this.height + added, MAX_SIZE);
+    this.length += Math.min(added * 50, MAX_LEN);
     this.turnSpeed -= added / 1000;
     this.turnSpeed = Math.max(0.05, this.turnSpeed);
     this.movementQueueLen = Math.ceil(this.length / this.oldSpeed);

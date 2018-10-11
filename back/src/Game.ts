@@ -8,7 +8,7 @@ import * as shortid from 'shortid';
 
 const schemapack = require('schemapack');
 const simplify = require('simplify-js');
-const collisionWorker = require('./collision-worker').default;
+// const collisionWorker = require('./collision-worker').default;
 
 const gameUpdate = schemapack.build({
   snakes: [
@@ -149,10 +149,10 @@ export class Game {
   public init() {
     this.wss.listen(SOCKET_PORT);
     setInterval(() => this.run(), GAMELOOP_RATE);
-    setInterval(
-      () => collisionWorker.postMessage(this.snakes),
-      GAMELOOP_RATE * 5,
-    );
+    // setInterval(
+    //   () => collisionWorker.postMessage(this.snakes),
+    //   GAMELOOP_RATE * 5,
+    // );
 
     this.wss.on('connection', (ws: Socket) => {
       this.confirmConnection();
@@ -200,56 +200,56 @@ export class Game {
       });
     });
 
-    collisionWorker.onmessage = (event: any) => {
-      (<any>Object)
-        .values(event.data)
-        .forEach((snake: { id: string; points: any }) => {
-          this.snakes.splice(this.snakes.findIndex(s => s.id === snake.id), 1);
-          snake.points.forEach(
-            (point: any, index: number) =>
-              index % 10 === 0 &&
-              this.foods.push(
-                new Food({
-                  id: shortid.generate(),
-                  x: point.x,
-                  y: point.y,
-                  size: 10,
-                  value: INITIAL_FOOD_VALUE,
-                }),
-              ),
-          );
-        });
-    };
+    // collisionWorker.onmessage = (event: any) => {
+    //   (<any>Object)
+    //     .values(event.data)
+    //     .forEach((snake: { id: string; points: any }) => {
+    //       this.snakes.splice(this.snakes.findIndex(s => s.id === snake.id), 1);
+    //       snake.points.forEach(
+    //         (point: any, index: number) =>
+    //           index % 10 === 0 &&
+    //           this.foods.push(
+    //             new Food({
+    //               id: shortid.generate(),
+    //               x: point.x,
+    //               y: point.y,
+    //               size: 10,
+    //               value: INITIAL_FOOD_VALUE,
+    //             }),
+    //           ),
+    //       );
+    //     });
+    // };
   }
 
   private run() {
-    // const snakeDeleted: Map<string, Snake> = new Map();
+    const snakeDeleted: Map<string, Snake> = new Map();
 
     this.snakes.forEach((snake: Snake) => {
       snake.update();
 
-      // if (snake.length < 0) {
-      //   snakeDeleted.set(snake.id, snake);
-      //   return;
-      // }
+      if (snake.length < 0) {
+        snakeDeleted.set(snake.id, snake);
+        return;
+      }
 
-      // if (
-      //   this.snakes.some(
-      //     (snake2: Snake) =>
-      //       snake2.id !== snake.id &&
-      //       rectCollision(snake, snake2) &&
-      //       snake2.points.some(point =>
-      //         collision(snake, {
-      //           ...point,
-      //           width: snake2.width,
-      //           height: snake2.height,
-      //         }),
-      //       ),
-      //   ) &&
-      //   !snakeDeleted.has(snake.id)
-      // ) {
-      //   snakeDeleted.set(snake.id, snake);
-      // }
+      if (
+        this.snakes.some(
+          (snake2: Snake) =>
+            snake2.id !== snake.id &&
+            rectCollision(snake, snake2) &&
+            snake2.points.some(point =>
+              collision(snake, {
+                ...point,
+                width: snake2.width,
+                height: snake2.height,
+              }),
+            ),
+        ) &&
+        !snakeDeleted.has(snake.id)
+      ) {
+        snakeDeleted.set(snake.id, snake);
+      }
 
       this.foods.forEach((food: Food) => {
         food.update();
@@ -278,7 +278,22 @@ export class Game {
           }),
         );
       }
-
+      snakeDeleted.forEach((snake: { id: string; points: any }) => {
+        this.snakes.splice(this.snakes.findIndex(s => s.id === snake.id), 1);
+        snake.points.forEach(
+          (point: any, index: number) =>
+            index % 10 === 0 &&
+            this.foods.push(
+              new Food({
+                id: shortid.generate(),
+                x: point.x,
+                y: point.y,
+                size: 10,
+                value: INITIAL_FOOD_VALUE,
+              }),
+            ),
+        );
+      });
       this.limit(snake);
     });
 

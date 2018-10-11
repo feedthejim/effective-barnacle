@@ -259,7 +259,7 @@ export class Game {
         const added = snake.eat(food);
         this.foods.splice(this.foods.indexOf(food), 1);
 
-        const newScale = snake.scale + added / (snake.width * 4);
+        const newScale = snake.scale + added / (snake.width * 20);
         if (newScale < 1.4) {
           snake.scale = newScale;
         }

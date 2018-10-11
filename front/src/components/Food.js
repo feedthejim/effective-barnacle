@@ -1,6 +1,7 @@
 import React from 'react';
 import { Circle } from 'react-konva';
 import { connect } from 'react-redux';
+import Konva from 'konva';
 
 const mapStateToProps = state => {
   return {
@@ -69,7 +70,7 @@ class Food extends React.PureComponent {
       <Circle
         {...foodConfig}
         ref={this.circle}
-        fill={'yellow'}
+        fill={Konva.Util.getRandomColor()}
         stroke={'white'}
         listening={false}
         // transformsEnabled="position"

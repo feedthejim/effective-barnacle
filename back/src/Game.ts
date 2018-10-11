@@ -230,7 +230,6 @@ export class Game {
 
       if (snake.length <= 0) {
         snakeDeleted.set(snake.id, snake);
-        return;
       }
 
       if (

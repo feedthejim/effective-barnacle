@@ -228,7 +228,7 @@ export class Game {
     this.snakes.forEach((snake: Snake) => {
       snake.update();
 
-      if (snake.length < 0) {
+      if (snake.length <= 0) {
         snakeDeleted.set(snake.id, snake);
         return;
       }

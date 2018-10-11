@@ -242,8 +242,8 @@ export default class Snake extends GameEntity {
     }
 
     if (this.isSpeedUp) {
-      this.length -= 2;
-      this.movementQueueLen -= 2;
+      this.length = Math.max(this.length - 2, 0);
+      this.movementQueueLen = Math.max(this.movementQueueLen - 2, 0);
     }
 
     // save movement
